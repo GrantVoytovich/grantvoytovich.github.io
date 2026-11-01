@@ -1,0 +1,731 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Grant Voytovich</title>
+<style>
+  /* Single dark "instrument" theme. Neutral chrome; each project keeps its own
+     accent (horse = green, form = amber). Archivo + Inter + IBM Plex Mono. */
+  :root{
+    color-scheme:dark;
+    --bg:#0c0f12; --surface:#141922; --inset:#10151c;
+    --line:#232c36; --line2:#303b47;
+    --text:#e9eef3; --muted:#8c99a6; --faint:#5c6773;
+    --horse:#5aa88e; --form:#5aa88e; --ball:#5aa88e; --swing:#5aa88e; --mlb:#5aa88e; --llm:#5aa88e;
+    --good:#5aa88e; --bad:#c17d6a;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+    padding-left:max(16px,env(safe-area-inset-left,0px));
+    padding-right:max(16px,env(safe-area-inset-right,0px));
+    padding-bottom:3.5rem;
+  }
+  .wrap{max-width:820px;margin:0 auto}
+  h1,h2,h3{font-family:"Archivo",system-ui,sans-serif;letter-spacing:-.015em;margin:0}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  a{color:inherit}
+  .eyebrow{font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.11em;
+    font-weight:600;font-size:.72rem}
+
+  /* hero */
+  .hero{padding-block:42px 10px}
+  .hero .eyebrow{color:var(--muted)}
+  .hero h1{font-size:2.2rem;font-weight:800;line-height:1.03;margin:12px 0 10px;color:var(--text)}
+  .hero .lede{color:#cdd6de;font-size:1.14rem;max-width:62ch;margin:0}
+  .hero .lede b{color:var(--text);font-weight:600}
+  .hero .by{color:var(--faint);font-size:.9rem;margin-top:12px}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--muted);
+    border:1px solid var(--line2);border-radius:7px;padding:4px 9px}
+
+  /* tab bar */
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-top:24px;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{appearance:none;background:none;border:0;cursor:pointer;font-family:"Archivo",sans-serif;
+    font-weight:700;font-size:.92rem;color:var(--muted);padding:11px 12px;border-bottom:2px solid transparent;
+    margin-bottom:-1px;white-space:nowrap;flex:0 0 auto}
+  .tabs button:hover{color:#cdd6de}
+  .tabs button[aria-selected="true"]{color:var(--text);border-bottom-color:var(--text)}
+
+  /* project */
+  .project{border-top:1px solid var(--line);padding-block:30px 10px}
+  .project:first-child{border-top:0}
+  .p-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .p-num{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:var(--pc)}
+  .project h2{font-size:1.5rem;font-weight:800}
+  .p-kind{color:var(--muted);font-size:.82rem}
+  .p-lede{color:#cdd6de;font-size:1.02rem;max-width:62ch;margin:4px 0 14px}
+  .p-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .p-tags .tag{border-color:var(--line)}
+
+  .demo-frame{border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:#000}
+  .demo-frame video{display:block;width:100%;height:auto}
+  .demo-cap{color:var(--faint);font-size:.8rem;margin:9px 2px 14px}
+
+  .readout{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
+  .ro{background:var(--surface);padding:12px 14px;min-width:0}
+  .ro .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.28rem;line-height:1.1;font-variant-numeric:tabular-nums}
+  .ro .v small{font-family:"Inter",sans-serif;font-size:.64rem;color:var(--muted);font-weight:600}
+  .ro .v.accent{color:var(--pc)}
+  .ro .v.good{color:var(--good)} .ro .v.bad{color:var(--bad)}
+  .ro .l{font-size:.72rem;color:var(--muted);margin-top:4px}
+  .ro .sub{font-size:.68rem;color:var(--faint);margin-top:1px}
+  @media(max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)}
+    .ro:nth-child(1),.ro:nth-child(2){border-bottom:1px solid var(--line)} }
+
+  .chartcard{background:var(--inset);border:1px solid var(--line);border-radius:12px;padding:13px 15px 7px;margin-bottom:14px}
+  .chartcard h3{font-size:.9rem;font-weight:700}
+  .chartcard .csub{color:var(--muted);font-size:.76rem;margin-bottom:6px}
+  .chartcard svg{width:100%;height:auto;display:block}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;font-size:.78rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+
+  .how{color:#c2ccd4;font-size:.9rem;margin:0 0 14px}
+  .how b{color:var(--text)}
+  .p-links{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-family:"Archivo",sans-serif;font-weight:700;
+    font-size:.85rem;border-radius:9px;padding:9px 15px;text-decoration:none;cursor:pointer}
+  .btn.code{background:var(--pc);color:#07140d}
+  .btn.soon{border:1px dashed var(--line2);color:var(--faint);cursor:default}
+  .btn svg{width:15px;height:15px}
+
+  /* roadmap / closing */
+  .roadmap{border-top:1px solid var(--line);padding-block:30px 8px}
+  .roadmap .eyebrow{color:var(--ball)}
+  .roadmap h2{font-size:1.4rem;font-weight:800;margin:10px 0 6px}
+  .roadmap p{color:#cdd6de;margin:0 0 14px;max-width:62ch}
+
+  /* analytics */
+  .mlb{--pc:var(--mlb)}
+  .an-head{padding-block:28px 6px}
+  .an-head .eyebrow{color:var(--mlb)}
+  .an-head h2{font-size:1.6rem;font-weight:800;margin:10px 0 8px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+  .panel>h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+  .predgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:560px){ .predgrid{grid-template-columns:1fr} }
+  .tbl-h{font-family:"Archivo",sans-serif;font-weight:700;font-size:.82rem;padding:0 2px 6px;margin-bottom:4px;border-bottom:2px solid var(--line)}
+  .tbl-h.bounce{color:var(--good);border-bottom-color:var(--good)}
+  .tbl-h.regress{color:var(--bad);border-bottom-color:var(--bad)}
+  table.pred{width:100%;border-collapse:collapse;font-size:.82rem}
+  table.pred th{font-family:"Archivo",sans-serif;text-align:left;color:var(--muted);font-weight:600;
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;padding:5px 5px;border-bottom:1px solid var(--line)}
+  table.pred td{padding:6px 5px;border-bottom:1px solid var(--line)}
+  table.pred td.num,table.pred th.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  table.pred td.mut{color:var(--muted)}
+  table.pred td.proj{color:var(--text);font-weight:600}
+  .explain{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;color:#c2ccd4;font-size:.88rem;background:var(--surface);margin-top:16px}
+  .explain .k{font-family:"Archivo",sans-serif;font-weight:700;color:var(--mlb);text-transform:uppercase;
+    letter-spacing:.05em;font-size:.74rem;flex:0 0 auto;padding-top:2px}
+  .explain b{color:var(--text)}
+
+  .ragflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:#c6cbe0}
+  .ragflow span{border:1px solid var(--line2);border-radius:7px;padding:5px 10px}
+  .ragflow i{color:var(--faint);font-style:normal}
+  .qa-q{font-weight:600;color:var(--text);margin-bottom:10px}
+  .qa-q::before{content:"Q  ";color:var(--llm);font-family:"IBM Plex Mono",monospace;font-weight:700}
+  .qa-a{color:#eef0f7;line-height:1.7;margin-bottom:12px}
+  .qa-a b{color:#fff}
+  .qcite{font-family:"IBM Plex Mono",monospace;font-size:.66rem;font-weight:600;color:var(--llm);background:rgba(90,168,142,.16);border-radius:5px;padding:1px 5px;margin:0 1px;vertical-align:.1em}
+  .qa-src{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-bottom:7px;font-size:.84rem;color:#c0c5d6;line-height:1.5}
+  .qa-src .sl{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--muted);margin-bottom:3px}
+  .qa-src .sl b{color:var(--llm)}
+  .flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+  .fnode{flex:1 1 150px;min-width:0;background:var(--inset);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:.86rem;color:#cdd6de}
+  .fnode .flabel{font-family:"IBM Plex Mono",monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+  .fnode.agent{border-color:var(--line2);background:var(--surface)}
+  .fnode.agent b{color:var(--mlb);font-weight:700}
+  .farrow{display:flex;align-items:center;color:var(--faint);font-size:1.1rem;flex:0 0 auto}
+  @media(max-width:560px){ .farrow{transform:rotate(90deg);width:100%;justify-content:center;height:12px} .fnode{flex-basis:100%} }
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  @media(max-width:520px){ .ba{grid-template-columns:1fr} }
+  .ba>div{border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:.86rem;color:#c2ccd4;line-height:1.5}
+  .ba .before{border-left:2px solid var(--faint)}
+  .ba .after{border-left:2px solid var(--mlb)}
+  .ba b{font-family:"Archivo",sans-serif;display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .ba .before b{color:var(--muted)} .ba .after b{color:var(--mlb)}
+  .about-lede{font-size:1.1rem;color:#dbe1ea;line-height:1.7;max-width:64ch;margin:0 0 16px}
+  .about-lede b{color:var(--text)}
+  .enjoy{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  @media(max-width:520px){ .enjoy{grid-template-columns:1fr} }
+  .enjoy .e{border:1px solid var(--line);border-radius:10px;padding:13px 15px;background:var(--surface)}
+  .enjoy .e b{font-family:"Archivo",sans-serif;display:block;margin-bottom:3px}
+  .enjoy .e span{color:var(--muted);font-size:.9rem}
+  .contact{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;font-size:.92rem}
+  .contact a{color:var(--mlb);text-decoration:none}
+  .contact a:hover{text-decoration:underline}
+  .contact span{color:var(--faint)}
+  footer{border-top:1px solid var(--line);padding-top:18px;margin-top:22px;color:var(--faint);font-size:.8rem}
+  footer .mono{color:var(--muted)}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Management consultant · AI automation &amp; analytics</div>
+    <h1>Grant Voytovich</h1>
+    <p class="lede">I find manual, repetitive work and replace it with <b>AI agents and automations</b> —
+      today as a management consultant, before that building internal tools at a fintech, with a data
+      background that runs through professional baseball. Alongside that, I build computer-vision,
+      predictive, and LLM projects of my own.</p>
+    <div class="tags">
+      <span class="tag">AI agents</span><span class="tag">Python · SQL · R</span>
+      <span class="tag">LLM APIs</span><span class="tag">AWS</span>
+      <span class="tag">Computer vision</span><span class="tag">Analytics</span>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Portfolio sections">
+    <button role="tab" id="t-about" aria-selected="true" aria-controls="tab-about">About</button>
+    <button role="tab" id="t-pro" aria-selected="false" aria-controls="tab-pro">Professional Work</button>
+    <button role="tab" id="t-cv" aria-selected="false" aria-controls="tab-cv">Computer Vision</button>
+    <button role="tab" id="t-an" aria-selected="false" aria-controls="tab-analytics">Predictive Analytics</button>
+    <button role="tab" id="t-llm" aria-selected="false" aria-controls="tab-llm">Generative AI</button>
+  </div>
+
+  <!-- ===================== TAB 1: COMPUTER VISION ===================== -->
+  <!-- TAB: ABOUT -->
+  <div id="tab-about">
+  <section class="project" style="--pc:var(--mlb)">
+    <div class="p-head"><span class="p-num">00</span><h2>About</h2><span class="p-kind">Who I am</span></div>
+    <p class="about-lede">I'm a builder and analyst who turns <b>manual, repetitive work into AI agents
+      and automations</b>. I'm currently a <b>management consultant at Carpedia International</b>, finding
+      where AI can streamline client operations; before that, on a <b>fintech's BaaS team</b>, I shipped
+      internal agents that cut 10+ hours of manual work a week. My data background runs through
+      <b>professional baseball</b> — a data-quality fellowship with the <b>Minnesota Twins</b> and leading
+      analytics for a Division I program — which is why half of my personal projects are sports-driven.</p>
+    <div class="enjoy">
+      <div class="e"><b>Turning grunt work into tools</b><span>I like finding the manual, repetitive thing a team dreads and replacing it with something that just runs.</span></div>
+      <div class="e"><b>End-to-end building</b><span>Data, model, API, and a clean interface — I enjoy owning the whole path from messy input to a usable product.</span></div>
+      <div class="e"><b>Baseball &amp; data</b><span>A data fellowship with the Minnesota Twins and leading analytics for a Division I program — baseball is where my love of modeling started, and half these projects grew from it.</span></div>
+      <div class="e"><b>Systems that show their work</b><span>Cited answers, stated limits, numbers you can trace back to the source — I care that a tool is honest about what it knows.</span></div>
+    </div>
+    <div class="contact">
+      <a href="mailto:grantvoytovich@gmail.com">grantvoytovich@gmail.com</a><span>·</span><a href="https://www.linkedin.com/in/grant-voytovich/" target="_blank" rel="noopener">linkedin.com/in/grant-voytovich</a>
+    </div>
+  </section>
+  <section class="roadmap">
+    <div class="eyebrow" style="color:var(--mlb)">What's here</div>
+    <h2>Four more tabs</h2>
+    <p><b>Professional Work</b> — AI agents I built at Thread Bank. <b>Computer Vision</b>,
+      <b>Predictive Analytics</b>, and <b>Generative AI</b> — projects of my own, each with working
+      code. Start anywhere.</p>
+  </section>
+  </div><!-- /tab-about -->
+
+  <!-- TAB: PROFESSIONAL WORK -->
+  <div id="tab-pro" hidden>
+  <div class="an-head" style="padding-block:30px 6px">
+    <div class="eyebrow" style="color:var(--mlb)">Professional work · Thread Bank</div>
+    <h2 style="font-size:1.6rem;font-weight:800;margin:10px 0 8px">AI agents in BaaS operations</h2>
+    <p class="p-lede">As an analyst on the Banking-as-a-Service strategy &amp; development team, I built
+      internal <b>AI agents and automations</b> that replaced manual operations work — reading contracts,
+      reporting partner status, and tracking action items — <b>cutting 10+ hours of manual work a week</b>.
+      Summaries are high-level; partner names and figures are omitted.</p>
+  </div>
+
+  <section class="project" style="--pc:var(--mlb)">
+    <div class="p-head"><span class="p-num">01</span><h2>Legal Agreement Review Agent</h2><span class="p-kind">Document intelligence</span></div>
+    <p class="p-lede">Partner agreements held critical, time-sensitive terms — expiration dates, fee
+      schedules, obligations — buried in PDFs. I built an agent that reads each agreement, extracts the
+      key fields, and synthesizes them into one app with a live view of every contract.</p>
+    <div class="flow">
+      <div class="fnode"><div class="flabel">Input</div>Partner agreement PDFs</div>
+      <div class="farrow">→</div>
+      <div class="fnode agent"><div class="flabel">Agent</div><b>Claude</b> parses, extracts &amp; structures key terms</div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="flabel">Output</div>Live contract dashboard · AWS</div>
+    </div>
+    <div class="ba">
+      <div class="before"><b>Before</b>Executives read each agreement by hand to find when it expired, what a partner owed, or a specific term.</div>
+      <div class="after"><b>After</b>One searchable view of every contract's dates, fees and obligations — answers in seconds, nothing missed.</div>
+    </div>
+  </section>
+
+  <section class="project" style="--pc:var(--mlb)">
+    <div class="p-head"><span class="p-num">02</span><h2>Partner Status Digest</h2><span class="p-kind">Reporting automation</span></div>
+    <p class="p-lede">Initiative status with each partner lived in scattered email threads. I built an
+      agent that pulls from several data sources and sends each partner a biweekly digest: where joint
+      initiatives stand, what we need from them, and what they need from us.</p>
+    <div class="flow">
+      <div class="fnode"><div class="flabel">Inputs</div>Several internal data sources</div>
+      <div class="farrow">→</div>
+      <div class="fnode agent"><div class="flabel">Agent</div><b>Claude</b> compiles a per-partner status report</div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="flabel">Output</div>Biweekly digest, emailed per partner</div>
+    </div>
+    <div class="ba">
+      <div class="before"><b>Before</b>Status and open items were spread across email — hard for either side to see where things actually stood.</div>
+      <div class="after"><b>After</b>A consistent, automatic status report every two weeks, with clear owed-items on both sides.</div>
+    </div>
+  </section>
+
+  <section class="project" style="--pc:var(--mlb)">
+    <div class="p-head"><span class="p-num">03</span><h2>Daily Action-Item Agent</h2><span class="p-kind">Team operations</span></div>
+    <p class="p-lede">To-dos were buried across email, project-management software, and internal chat,
+      and everyone tracked their own by hand. I built an agent that aggregates across those sources and
+      sends a daily update with personalized action items for each teammate.</p>
+    <div class="flow">
+      <div class="fnode"><div class="flabel">Inputs</div>Email · PM tool · internal chat</div>
+      <div class="farrow">→</div>
+      <div class="fnode agent"><div class="flabel">Agent</div><b>Claude</b> aggregates &amp; assigns action items</div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="flabel">Output</div>Daily per-person action list</div>
+    </div>
+    <div class="ba">
+      <div class="before"><b>Before</b>Each person combed through email and tools to piece together their own to-dos.</div>
+      <div class="after"><b>After</b>Everyone starts the day with a clear, aggregated action list — nothing lost between tools.</div>
+    </div>
+  </section>
+
+  <section class="roadmap">
+    <div class="eyebrow" style="color:var(--mlb)">Common thread</div>
+    <h2>From manual to automatic</h2>
+    <p>Each of these took work that lived in inboxes and people's heads and turned it into a system that
+      runs itself and stays current — the same instinct behind the personal projects in the other tabs.</p>
+  </section>
+  </div><!-- /tab-pro -->
+
+  <div id="tab-cv" hidden>
+
+  <!-- PROJECT 1 — HORSE -->
+  <section class="project" style="--pc:var(--horse)">
+    <div class="p-head"><span class="p-num">01</span><h2>Horse Motion Analyzer</h2>
+      <span class="p-kind">Detection &amp; tracking</span></div>
+    <p class="p-lede">Reads a horse's <b>relative speed, gait, and stride cadence</b> from
+      video — calibration-free, by measuring movement in the horse's own body lengths.</p>
+    <div class="p-tags"><span class="tag">YOLOv8 detect</span><span class="tag">ByteTrack</span><span class="tag">FFT cadence</span></div>
+    <div class="demo-frame">
+      <video src="horse_demo.mp4" poster="horse_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="demo-cap">Live output on a standardbred race clip — the analyzer locks onto the most prominent horse and reads its gait and pace.</div>
+    <div class="readout">
+      <div class="ro"><div class="v accent">Trot</div><div class="l">Detected gait</div></div>
+      <div class="ro"><div class="v">1.22 <small>BL/s</small></div><div class="l">Peak speed</div></div>
+      <div class="ro"><div class="v">29 <small>/min</small></div><div class="l">Cadence</div></div>
+      <div class="ro"><div class="v">362</div><div class="l">Frames tracked</div></div>
+    </div>
+    <div class="chartcard">
+      <h3>Speed over time</h3>
+      <div class="csub">Body lengths per second, across the clip</div>
+      <svg id="chartHorse" viewBox="0 0 680 170" preserveAspectRatio="none" role="img" aria-label="Horse speed over the clip, peaking near 1.7 body lengths per second"></svg>
+    </div>
+    <p class="how"><b>How:</b> YOLOv8 detects the horse each frame, ByteTrack keeps it the same
+      horse, and displacement ÷ body length gives a scale-invariant speed. Cadence comes from
+      the FFT of the vertical bob.</p>
+    <div class="p-links">
+      <a class="btn code" href="https://github.com/GrantVoytovich/horse-speed-analyzer" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+      <span class="btn soon">Live demo · coming soon</span>
+    </div>
+  </section>
+
+  <!-- PROJECT 2 — FORM CHECK -->
+  <section class="project" style="--pc:var(--form)">
+    <div class="p-head"><span class="p-num">02</span><h2>Form Check</h2>
+      <span class="p-kind">Pose estimation</span></div>
+    <p class="p-lede">Fits a <b>skeleton</b> to a lifter and grades the movement — <b>reps,
+      squat depth, tempo, and left/right symmetry</b> — with coaching cues.</p>
+    <div class="p-tags"><span class="tag">YOLOv8-pose</span><span class="tag">17 keypoints</span><span class="tag">joint angles</span></div>
+    <div class="demo-frame">
+      <video src="squat_demo.mp4" poster="squat_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="demo-cap">Live output on a squat clip — the skeleton drives every metric; the HUD shows the running rep count and knee angle.</div>
+    <div class="readout">
+      <div class="ro"><div class="v accent">Deep</div><div class="l">Squat depth</div></div>
+      <div class="ro"><div class="v">52 <small>° knee</small></div><div class="l">Best depth</div></div>
+      <div class="ro"><div class="v">88 <small>%</small></div><div class="l">Symmetry</div></div>
+      <div class="ro"><div class="v">2</div><div class="l">Reps</div></div>
+    </div>
+    <div class="chartcard">
+      <h3>Knee angle through the set</h3>
+      <div class="csub">Degrees over time — each dip is a rep; the deepest point is marked</div>
+      <svg id="chartForm" viewBox="0 0 680 180" preserveAspectRatio="none" role="img" aria-label="Knee angle across the squat set, bottoming near 52 degrees"></svg>
+    </div>
+    <p class="how"><b>How:</b> A YOLOv8-pose model places 17 body keypoints each frame. Joint angles
+      come from the hip–knee–ankle geometry; reps, depth and symmetry are derived from the
+      knee-angle signal with thresholds that adapt to each person's range of motion.</p>
+    <div class="p-links">
+      <a class="btn code" href="https://github.com/GrantVoytovich/form-check" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+      <span class="btn soon">Live demo · coming soon</span>
+    </div>
+  </section>
+
+  <!-- PROJECT 3 — PITCH -->
+  <section class="project" style="--pc:var(--ball)">
+    <div class="p-head"><span class="p-num">03</span><h2>Pitch Analyzer</h2>
+      <span class="p-kind">Biomechanics</span></div>
+    <p class="p-lede">Breaks down a pitching delivery — <b>arm speed, hip–shoulder separation,
+      and the kinematic sequence</b> (does the pelvis, torso, and arm fire in order?) — from a
+      single camera.</p>
+    <div class="p-tags"><span class="tag">YOLOv8-pose</span><span class="tag">segment kinematics</span><span class="tag">2-D estimate</span></div>
+    <div class="demo-frame">
+      <video src="pitch_demo.mp4" poster="pitch_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="demo-cap">Live output on a delivery — the throwing arm is highlighted, and the HUD tracks arm speed and separation and marks release.</div>
+    <div class="readout">
+      <div class="ro"><div class="v accent">In order</div><div class="l">Kinematic sequence</div></div>
+      <div class="ro"><div class="v">14.4 <small>bl/s</small></div><div class="l">Peak arm speed</div></div>
+      <div class="ro"><div class="v">52 <small>°</small></div><div class="l">Max separation</div></div>
+      <div class="ro"><div class="v">3.0 <small>s</small></div><div class="l">Release</div></div>
+    </div>
+    <div class="chartcard">
+      <h3>Kinematic sequence</h3>
+      <div class="csub">Rotational speed (normalized) through the delivery — a clean throw peaks pelvis → torso → arm, left to right</div>
+      <svg id="chartPitch" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Normalized rotational speed of pelvis, torso and arm, peaking in order"></svg>
+      <div class="legend">
+        <span><i style="background:#9aa6b2"></i>Pelvis</span>
+        <span><i style="background:#687585"></i>Torso</span>
+        <span><i style="background:#5aa88e"></i>Arm</span>
+      </div>
+    </div>
+    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints and auto-detects the throwing arm.
+      Arm speed is the wrist's velocity, separation is the hip-line vs shoulder-line angle, and the
+      sequence compares <b>when</b> each segment's rotation peaks. 2-D from one camera, so the
+      rotational numbers are estimates.</p>
+    <div class="p-links">
+      <a class="btn code" href="https://github.com/GrantVoytovich/pitch-analyzer" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+      <span class="btn soon">Live demo · coming soon</span>
+    </div>
+  </section>
+
+  <!-- PROJECT 4 — SWING -->
+  <section class="project" style="--pc:var(--swing)">
+    <div class="p-head"><span class="p-num">04</span><h2>Swing Analyzer</h2>
+      <span class="p-kind">Biomechanics · baseball &amp; golf</span></div>
+    <p class="p-lede">One tool for a bat or a club: <b>hand speed, hip–shoulder separation, and
+      the kinematic sequence</b> over the downswing — because a baseball swing and a golf swing
+      are the same rotational engine.</p>
+    <div class="p-tags"><span class="tag">YOLOv8-pose</span><span class="tag">downswing sequence</span><span class="tag">2-D estimate</span></div>
+    <div class="demo-frame">
+      <video src="swing_demo.mp4" poster="swing_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="demo-cap">Live output on a golf driver swing — the arms are highlighted, and the HUD tracks hand speed and separation and marks impact.</div>
+    <div class="readout">
+      <div class="ro"><div class="v accent">In order</div><div class="l">Kinematic sequence</div></div>
+      <div class="ro"><div class="v">16.5 <small>bl/s</small></div><div class="l">Peak hand speed</div></div>
+      <div class="ro"><div class="v">55 <small>°</small></div><div class="l">Max separation</div></div>
+      <div class="ro"><div class="v">8.5 <small>s</small></div><div class="l">Impact</div></div>
+    </div>
+    <div class="chartcard">
+      <h3>Kinematic sequence</h3>
+      <div class="csub">Rotational speed (normalized) over the downswing — pelvis → torso → hands, peaking left to right into impact</div>
+      <svg id="chartSwing" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Normalized rotational speed of pelvis, torso and hands over the downswing"></svg>
+      <div class="legend">
+        <span><i style="background:#9aa6b2"></i>Pelvis</span>
+        <span><i style="background:#687585"></i>Torso</span>
+        <span><i style="background:#5aa88e"></i>Hands</span>
+      </div>
+    </div>
+    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints; the hands are the wrist midpoint.
+      The sequence is measured over the downswing (transition → impact) so follow-through
+      rotation doesn't masquerade as a late peak. 2-D from one camera, so the rotational
+      numbers are estimates.</p>
+    <div class="p-links">
+      <a class="btn code" href="https://github.com/GrantVoytovich/swing-analyzer" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+      <span class="btn soon">Live demo · coming soon</span>
+    </div>
+  </section>
+
+  <section class="roadmap">
+    <div class="eyebrow">Where it goes</div>
+    <h2>One engine, many sports</h2>
+    <p>Four tools, one pose-and-kinematics core — proof the same approach generalizes from a
+      racehorse to a lifter to a pitcher to a swing. Next: a down-the-line view for swing plane,
+      and multi-camera capture to turn the 2-D estimates into true 3-D measurements.</p>
+  </section>
+
+  </div><!-- /tab-cv -->
+
+  <!-- ===================== TAB 2: PREDICTIVE ANALYTICS ===================== -->
+  <div id="tab-analytics" class="mlb" hidden>
+
+    <div class="an-head">
+      <div class="eyebrow">Predictive analytics · MLB</div>
+      <h2>2027 Bounce-Back &amp; Regression</h2>
+      <p class="p-lede">Which hitters and pitchers are primed to rebound or fall off next year? The
+        signal: when a player's <b>actual</b> results (ERA, wOBA) drift far from their <b>expected</b>
+        stats (xERA, xwOBA) — the versions that strip out luck — they tend to snap back toward the
+        expected mark. Validated on six seasons (2021–26), then applied to 2026 to project 2027.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Does the thesis hold? — Pitchers <span style="color:var(--muted);font-weight:400">(578 season-pairs, ≥300 BF)</span></h3>
+      <div class="readout" id="pit-stats"></div>
+      <p class="how" style="margin:12px 0 4px"><b>Yes.</b> xERA predicts next year's ERA better than ERA
+        itself, and the actual-minus-expected gap predicts the next-year change at r = −0.49. Bucket
+        2026 pitchers by how lucky they were and the next-year effect is monotonic:</p>
+      <div class="chartcard">
+        <h3>Next-year ERA change, by 2026 luck</h3>
+        <div class="csub">Pitchers in five buckets by their 2026 ERA−xERA gap. Lucky arms (ERA under xERA) got worse; unlucky arms bounced back.</div>
+        <svg id="chartBuckets" viewBox="0 0 680 220" role="img" aria-label="Next-year ERA change by 2026 luck bucket, monotonic"></svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Hitters <span style="color:var(--muted);font-weight:400">(994 season-pairs, ≥300 PA)</span></h3>
+      <div class="readout" id="bat-stats"></div>
+      <p class="how" style="margin-top:12px">Same direction, much weaker. Hitting is mostly skill, so wOBA
+        is far stickier than ERA and there's less luck to regress — the bounce-back edge is real but small.</p>
+    </div>
+
+    <div class="an-head" style="padding-block:6px 2px">
+      <div class="eyebrow">2027 projections</div>
+      <h2 style="font-size:1.3rem">The names</h2>
+    </div>
+    <p class="how" style="margin-top:-2px">Ranked by the size of the 2026 luck gap. Projection =
+      a fit of next-year ≈ actual + expected, applied to 2026. BF/PA shown so you can weight sample size.</p>
+
+    <h3 style="font-size:1.1rem;margin:14px 0 8px">Pitchers <span style="color:var(--muted);font-size:.8rem;font-weight:400">· 2026 ERA → projected 2027</span></h3>
+    <div class="predgrid">
+      <div><div class="tbl-h bounce">Bounce-back ↑ &nbsp;<span style="color:var(--muted);font-weight:400">unlucky in 2026</span></div><div id="pit-bounce"></div></div>
+      <div><div class="tbl-h regress">Regression ↓ &nbsp;<span style="color:var(--muted);font-weight:400">lucky in 2026</span></div><div id="pit-regress"></div></div>
+    </div>
+
+    <h3 style="font-size:1.1rem;margin:20px 0 8px">Hitters <span style="color:var(--muted);font-size:.8rem;font-weight:400">· 2026 wOBA → projected 2027</span></h3>
+    <div class="predgrid">
+      <div><div class="tbl-h bounce">Bounce-back ↑</div><div id="bat-bounce"></div></div>
+      <div><div class="tbl-h regress">Regression ↓</div><div id="bat-regress"></div></div>
+    </div>
+
+    <div class="explain">
+      <span class="k">Read&nbsp;it&nbsp;right</span>
+      <div>This is <b>one signal, not a projection system</b> — it ignores age, injury, role and park, and
+        the extreme names are often small-sample. Expected stats carry their own error. It works much better
+        for pitchers (ERA is luck-heavy) than hitters. Think of it as "where the luck dragon visited in 2026,"
+        a prior to combine with everything else — not a point forecast.</div>
+    </div>
+
+    <div class="p-links" style="margin-top:14px">
+      <a class="btn code" href="https://github.com/GrantVoytovich/mlb-regression" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+    </div>
+
+  </div><!-- /tab-analytics -->
+
+  <!-- ===================== TAB 3: GENERATIVE AI ===================== -->
+  <div id="tab-llm" class="llm" hidden>
+  <section class="project" style="--pc:var(--llm)">
+    <div class="p-head"><span class="p-num">05</span><h2>DocChat</h2>
+      <span class="p-kind">Retrieval-augmented generation</span></div>
+    <p class="p-lede">Upload a PDF and ask questions. DocChat retrieves the passages most relevant to
+      your question and has <b>Claude answer only from them, with citations</b> — grounded in the
+      document, not guessed.</p>
+    <div class="p-tags"><span class="tag">Python · FastAPI</span><span class="tag">sentence-transformers</span><span class="tag">Claude API</span><span class="tag">RAG</span></div>
+
+    <div class="chartcard">
+      <h3>The pipeline</h3>
+      <div class="csub">Retrieval runs locally and free; only the final answer calls the model.</div>
+      <div class="ragflow">
+        <span>PDF</span><i>→</i><span>chunk</span><i>→</i><span>embed</span><i>→</i><span>retrieve top-k</span><i>→</i><span>ground</span><i>→</i><span>cite</span>
+      </div>
+    </div>
+
+    <div class="demo-frame" style="background:var(--inset);padding:16px 16px 7px">
+      <div class="qa-q">What discount do working members get, and when are patronage dividends paid?</div>
+      <div class="qa-a">Working members who put in four volunteer hours a month earn an additional
+        <b>5% discount</b> <span class="qcite">3</span>, on top of the standing <b>8%</b> member
+        discount on bulk goods <span class="qcite">1</span>. Patronage dividends — 2% of annual
+        purchases — are paid each <b>February</b> for the prior fiscal year <span class="qcite">1</span>.</div>
+      <div class="qa-src"><div class="sl"><b>[1]</b> · page 2 · 0.74 match</div>Members receive a standing 8% discount on bulk goods and a 2% patronage dividend on annual purchases… Dividends are paid each February for the prior fiscal year.</div>
+      <div class="qa-src"><div class="sl"><b>[3]</b> · page 5 · 0.71 match</div>Members working four volunteer hours per month earn an additional 5% working-member discount.</div>
+    </div>
+    <div class="demo-cap">Example on a sample member handbook — the answer cites the passages it drew from; in the app each citation jumps to its source.</div>
+
+    <p class="how"><b>How:</b> the PDF is split into overlapping <b>chunks</b>, each embedded with a
+      local <b>sentence-transformers</b> model. The question is embedded the same way and
+      <b>cosine similarity</b> ranks the passages; the top matches — and only those — go to <b>Claude</b>
+      with instructions to answer from them and cite each claim. Retrieval is free and local, so the app
+      runs without an API key (showing the passages it found); a key turns on the written answers.</p>
+    <div class="p-links">
+      <a class="btn code" href="https://github.com/GrantVoytovich/docchat" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View code</a>
+      <span class="btn soon">Live demo · coming soon</span>
+    </div>
+  </section>
+
+  <section class="roadmap">
+    <div class="eyebrow" style="color:var(--llm)">The arc</div>
+    <h2>See, predict, reason</h2>
+    <p>Three ways of turning raw input into insight: computer vision that reads motion from video,
+      models that find signal in data, and retrieval-augmented generation that answers from documents
+      with its sources shown. Different techniques, one engineering throughline.</p>
+  </section>
+  </div><!-- /tab-llm -->
+
+  <footer>
+    <span class="mono">Computer vision</span>: YOLOv8 + OpenCV, processed server-side — demo clips are live tool output.
+    <span class="mono">Analytics</span>: Statcast expected stats via pybaseball, 2021–26. Built by Grant Voytovich.
+  </footer>
+</div>
+
+<script>
+/* ---------- CV charts (unchanged) ---------- */
+const HORSE=[0.243,0.254,0.262,0.27,0.272,0.272,0.265,0.257,0.245,0.233,0.221,0.21,0.208,0.21,0.216,0.223,0.241,0.262,0.296,0.335,0.381,0.432,0.485,0.542,0.582,0.615,0.638,0.658,0.664,0.666,0.649,0.626,0.593,0.548,0.495,0.435,0.381,0.33,0.293,0.266,0.25,0.24,0.245,0.258,0.277,0.3,0.327,0.355,0.359,0.369,0.405,0.451,0.507,0.573,0.649,0.734,0.833,0.945,1.07,1.207,1.343,1.468,1.543,1.597,1.638,1.658,1.654,1.626,1.574,1.496,1.392,1.262,1.143,1.012,0.888,0.769,0.663,0.575,0.504,0.447,0.402,0.368,0.347,0.339,0.344,0.361,0.391,0.422,0.438,0.437,0.423,0.403,0.385,0.369,0.357,0.348,0.343,0.341,0.343,0.349,0.357,0.377,0.407,0.445,0.481,0.52,0.556,0.59,0.621,0.648,0.673,0.695,0.714,0.729,0.739,0.744,0.747,0.746,0.743,0.737,0.728,0.717,0.7,0.678,0.649,0.615,0.576,0.53,0.479,0.422,0.364,0.31,0.261,0.218,0.18,0.149,0.123,0.103,0.089,0.08,0.078,0.081,0.088,0.094,0.097,0.097,0.097,0.099,0.103,0.108,0.114,0.122,0.131,0.141,0.153,0.169,0.188,0.208,0.233,0.255,0.276,0.294,0.312,0.328,0.342,0.358,0.369,0.371,0.367,0.36,0.337,0.312,0.283,0.257,0.235,0.217,0.204,0.193,0.185,0.183,0.182,0.183,0.192,0.204,0.217,0.226,0.231,0.23,0.228,0.222,0.221,0.22,0.222,0.225,0.224,0.222,0.229,0.24,0.253,0.267,0.276,0.285,0.285,0.282,0.278,0.274,0.281,0.293,0.29,0.282,0.27,0.26,0.252,0.244,0.241,0.242,0.244,0.246,0.24,0.232,0.223,0.215,0.203,0.192,0.193,0.203,0.202,0.198,0.18,0.165,0.158,0.154,0.169,0.189,0.216,0.241,0.271,0.299,0.322,0.343,0.359,0.364,0.358,0.347,0.325,0.301,0.277,0.254,0.212,0.159,0.119,0.085,0.071,0.067,0.071,0.075,0.082,0.095,0.112,0.13,0.152,0.177,0.203,0.228,0.25,0.269,0.285,0.302,0.319,0.327,0.332,0.331,0.324,0.319,0.314,0.308,0.301,0.294,0.287,0.279,0.271,0.262,0.253,0.25,0.252,0.25,0.248,0.248,0.254,0.248,0.231,0.225,0.233,0.26,0.294,0.338,0.384,0.429,0.472,0.516,0.559,0.602,0.642,0.658,0.646,0.607,0.566,0.525,0.485,0.447,0.408,0.371,0.328,0.296,0.275,0.266,0.27,0.282,0.287,0.281,0.268,0.253,0.238,0.218,0.197,0.183,0.174,0.164,0.153,0.141,0.128,0.131,0.144,0.153,0.163,0.162,0.158,0.154,0.151,0.153,0.158,0.159,0.159,0.156,0.152,0.141,0.127,0.13,0.143,0.141,0.144,0.151,0.159,0.178,0.206,0.213,0.212,0.231,0.257,0.301,0.346,0.371,0.378,0.382,0.385,0.386,0.384,0.4,0.422,0.431,0.436,0.395,0.347,0.328,0.319,0.315,0.314,0.313,0.312,0.295,0.271,0.245,0.215,0.223,0.24,0.271,0.307,0.333,0.355,0.38,0.408,0.439,0.471,0.511,0.554,0.569,0.568,0.544,0.511,0.484,0.459,0.418,0.371,0.323,0.277,0.238,0.204,0.193,0.189,0.189,0.19,0.19,0.191,0.205,0.227,0.25,0.274,0.29,0.305,0.312,0.315,0.344,0.38,0.417,0.45,0.482,0.511,0.543,0.581,0.633,0.695,0.768,0.846,0.907,0.962,0.997,1.018,1.029,1.031,1.03,1.013,0.976,0.917,0.838,0.754,0.673,0.597,0.555,0.531,0.535,0.554,0.577,0.604,0.628,0.652,0.684,0.716,0.745,0.765,0.759,0.742,0.683,0.627,0.584,0.555,0.538,0.534,0.543,0.565,0.6,0.649,0.71,0.78,0.859,0.921,0.971,1.006,1.036,1.055,1.054,1.033,0.992,0.934,0.859,0.763,0.675,0.602,0.546,0.506,0.483,0.477,0.487,0.515,0.56,0.622,0.702,0.798,0.902,0.999,1.076,1.14,1.194,1.236,1.261,1.266,1.268,1.265,1.267,1.266,1.222,1.151,1.067,0.971,0.868,0.778,0.703,0.642,0.595,0.56,0.538,0.528,0.531,0.546,0.575,0.616,0.657,0.684,0.706,0.724,0.723,0.702,0.655,0.594,0.547,0.502,0.459,0.421,0.398,0.381,0.368,0.358,0.353,0.351,0.356,0.369,0.386,0.41,0.424,0.427,0.433,0.437,0.434,0.425,0.416,0.408,0.397,0.381,0.359,0.33,0.313,0.301,0.293,0.287,0.283,0.285,0.287,0.295,0.314,0.34,0.377,0.418,0.464,0.511,0.548,0.581,0.628,0.676,0.72,0.753,0.778,0.802,0.821,0.847,0.865,0.89,0.921,0.955,1.035,1.131,1.214,1.295,1.366,1.422,1.479,1.524,1.56,1.57,1.559,1.537,1.389,1.236,1.102,0.976,0.851,0.732,0.621,0.519,0.425,0.346,0.28,0.221,0.228,0.22,0.204,0.186];
+const FORM=[140.8,141.1,140.9,140.1,137.7,135.5,133.5,131.3,129.5,127.8,126.1,124.7,123.3,122.1,120.9,119.7,117.1,114.5,112,109.4,107.8,105.9,104.1,102.5,100.8,99,97.5,95.9,94.8,94,93.1,91.7,89.5,87.1,84.7,82.8,81.8,81.6,81.1,80.9,80.5,78.8,76.7,74.9,73.3,72,71.1,69.8,68.2,66.8,65.7,64.2,63.3,62.9,62.7,62.8,62.7,62.1,61.4,60.9,60.6,60.5,60.5,60.5,60.2,59.8,59.6,59.2,59.2,59.2,59.1,58.9,58.7,58.5,58.4,58.5,58.6,58.6,58.8,58.7,58.7,58.5,58.1,57.8,57.4,57.1,56.8,56.5,56.4,55.8,55.4,54.9,54.5,54.5,55,56,56.9,57.7,58.1,58.2,58.2,58.1,58,57.9,58.1,58.3,58.8,59.2,59.2,59.7,60.5,61.5,63.1,65,66.4,69,71.5,74.6,77.9,81.2,85.1,88.7,93.1,95.6,97.5,99.3,100.3,102.4,104.3,106.6,109.7,113.1,116.6,120.3,123.5,126.3,129.3,132.7,136.1,139.3,142,143.8,145.4,146.8,148.4,150,151.4,152.6,153.7,155.1,156.7,158.1,159.8,161.2,162.8,164.5,166.1,167.5,169.1,170.5,171.8,173,173.6,174.2,174.5,174.9,175.4,175.7,175.9,176,176,176.1,176.1,176.3,176.2,176.2,176,175.9,175.4,174.5,173.7,172.9,172.4,172.4,172.8,172.6,172.4,172.1,171.2,141.1,126.3,96.4,66.5,66.7,51.6,51.9,52.5,52.9,53.4,53.8,54.1,54.5,55.2,55.9,56.6,57.2,57.6,58,58.3,58.7,59.1,59.8,60.5,62.1,63.6,65.2,66.7,67.5,68.2,68.8,69.6,70.5,71.6,72.9,74.2,75.5,76.8,78.1,79.4,80.7,81.6,82.6,84,85.7,88.1,90.2,92.1,94.4,96.2,97.8,99.5,100.1,100.8,101.7,102.3,103,103.5,103.2,102.8,101.9,101.5,102.7,104.3,106.7,109,110.7,112.4,114.1,115.7,117.4,119,120.7,122.4,124,125.5,126.8,128,129.2,130.3,131.5,132.6,133.5,134.1,134.3,134.2,134,133.8,133.6,133.3,133,132.8,132.5,132.2,132,131.7,131.5,131.2,130.9,130.7,130.4,130.1,129.9,129.6,129.3,129.1,128.8,128.6,128.3,128,127.8,127.5,127.2,127,126.7,126.5,126.2,125.9,125.7,125.6,125.5,124.8,123.6,121.7,119.3,117.2,115,112.9,110.8,108.6,106.5,103.4,99.7,94.9,89.2,85,81.9,80.4];
+
+function drawChart(id, s, color, mode){
+  const svg=document.getElementById(id); if(!svg||!s.length) return;
+  s=s.slice(); while(s.length>3 && Math.abs(s[s.length-1]-s[s.length-2])<0.05) s.pop();
+  const vb=svg.viewBox.baseVal, W=vb.width, H=vb.height, padL=40,padR=10,padT=12,padB=24;
+  const n=s.length;
+  const x=i=>padL+(W-padL-padR)*(n<2?0:i/(n-1));
+  let lo,hi,ticks,suffix,markIdx;
+  if(mode==="deg"){ lo=0; hi=180; ticks=[0,45,90,135,180]; suffix="°";
+    markIdx=0; s.forEach((v,i)=>{ if(v<s[markIdx]) markIdx=i; }); }
+  else { lo=0; const mx=Math.max(...s); hi=mx<=1?1:mx<=2?2:Math.ceil(mx);
+    ticks=[0,hi/4,hi/2,3*hi/4,hi]; suffix="";
+    markIdx=0; s.forEach((v,i)=>{ if(v>s[markIdx]) markIdx=i; }); }
+  const y=v=>padT+(H-padT-padB)*(1-(v-lo)/(hi-lo));
+  let g="";
+  ticks.forEach(val=>{ const yy=y(val);
+    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#232c36" stroke-width="1"/>`;
+    g+=`<text x="${padL-6}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#5c6773" font-family="IBM Plex Mono,monospace">${(mode==="deg"?val:val.toFixed(1))}${suffix}</text>`; });
+  let line=""; s.forEach((v,i)=>{ line+=(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
+  const area=mode==="deg"?"":(line+`L ${x(n-1).toFixed(1)} ${y(0)} L ${x(0).toFixed(1)} ${y(0)} Z`);
+  const grad=mode==="deg"?"":`<defs><linearGradient id="g_${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".24"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#g_${id})"/>`;
+  const mark=`<circle cx="${x(markIdx).toFixed(1)}" cy="${y(s[markIdx]).toFixed(1)}" r="3.5" fill="${color}"/>`;
+  svg.innerHTML=`${grad}${g}<path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>${mark}
+    <text x="${padL}" y="${H-6}" font-size="10" fill="#5c6773" font-family="IBM Plex Mono,monospace">start</text>
+    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#5c6773" font-family="IBM Plex Mono,monospace">end</text>`;
+}
+drawChart("chartHorse", HORSE, "#5aa88e", "bls");
+drawChart("chartForm", FORM, "#5aa88e", "deg");
+
+const PITCH_SEQ={
+  pelvis:[0.202,0.187,0.175,0.176,0.183,0.232,0.238,0.201,0.316,0.539,0.8,0.985,1,0.88,0.623,0.279,0.091,0.068,0.122,0.159,0.158,0.146,0.141,0.1,0.055,0.063,0.095,0.12,0.097,0.095,0.114,0.105,0.103,0.126,0.132,0.107,0.087,0.073,0.053,0.034,0.034],
+  torso:[0.299,0.272,0.235,0.235,0.264,0.348,0.35,0.297,0.334,0.425,0.663,0.752,0.854,1,0.849,0.511,0.443,0.508,0.607,0.752,0.732,0.714,0.598,0.49,0.436,0.448,0.467,0.475,0.339,0.3,0.38,0.407,0.398,0.414,0.357,0.259,0.217,0.206,0.182,0.16,0.184],
+  arm:[0.043,0.052,0.051,0.054,0.057,0.167,0.394,0.378,0.368,0.358,0.488,0.275,0.295,0.316,0.338,0.104,0.105,0.108,0.151,0.156,0.182,0.183,0.204,0.174,0.171,0.379,0.591,0.791,1,0.989,0.772,0.555,0.347,0.124,0.143,0.174,0.193,0.187,0.223,0.258,0.263],
+  peaks:{pelvis:12,torso:13,arm:28}
+};
+function drawSeq(id, c){
+  const svg=document.getElementById(id); if(!svg) return;
+  const vb=svg.viewBox.baseVal, W=vb.width, H=vb.height, padL=14,padR=10,padT=12,padB=22;
+  const curves=[["pelvis","#9aa6b2"],["torso","#687585"],["arm","#5aa88e"],["hands","#5aa88e"]];
+  const any=curves.find(([k])=>Array.isArray(c[k])&&c[k].length); if(!any) return;
+  const n=c[any[0]].length;
+  const x=i=>padL+(W-padL-padR)*(n<2?0:i/(n-1));
+  const y=v=>padT+(H-padT-padB)*(1-v);
+  let g=""; for(let t=0;t<=1.0001;t+=0.5){ const yy=y(t);
+    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#232c38" stroke-width="1"/>`; }
+  let paths="", marks=""; const peaks=c.peaks||{};
+  curves.forEach(([k,col])=>{ const s=c[k]; if(!Array.isArray(s)||!s.length) return;
+    let d=""; s.forEach((v,i)=>{ d+=(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
+    paths+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+    const pi=peaks[k]; if(pi!=null && s[pi]!=null){
+      marks+=`<line x1="${x(pi).toFixed(1)}" y1="${y(s[pi]).toFixed(1)}" x2="${x(pi).toFixed(1)}" y2="${H-padB}" stroke="${col}" stroke-width="1" stroke-dasharray="3 3" opacity=".55"/>`;
+      marks+=`<circle cx="${x(pi).toFixed(1)}" cy="${y(s[pi]).toFixed(1)}" r="3.5" fill="${col}"/>`; } });
+  svg.innerHTML=`${g}${marks}${paths}
+    <text x="${padL}" y="${H-6}" font-size="10" fill="#5c6675" font-family="IBM Plex Mono,monospace">start</text>
+    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#5c6675" font-family="IBM Plex Mono,monospace">release →</text>`;
+}
+drawSeq("chartPitch", PITCH_SEQ);
+const SWING_SEQ={
+  pelvis:[0.634,0.568,0.973,0.988,0.991,1,0.594,0.664,0.324,0.309,0.409,0.512,0.517,0.442],
+  torso:[0.888,0.653,0.852,0.91,1,0.979,0.659,0.691,0.534,0.532,0.525,0.638,0.732,0.653],
+  hands:[0.048,0.059,0.062,0.069,0.08,0.085,0.277,0.259,0.441,0.626,0.812,0.803,0.803,1],
+  peaks:{pelvis:5,torso:4,hands:13}
+};
+drawSeq("chartSwing", SWING_SEQ);
+
+/* ---------- Predictive-analytics data + rendering ---------- */
+const MLB={
+"pitchers":{"n_pairs":578,"r_actual":0.249,"r_expected":0.348,"r_gap":-0.494,"over_change":0.794,"under_change":-1.097,"buckets":[{"gap_mean":-0.971,"change_mean":0.734},{"gap_mean":-0.508,"change_mean":0.716},{"gap_mean":-0.209,"change_mean":0.122},{"gap_mean":0.154,"change_mean":-0.107},{"gap_mean":0.804,"change_mean":-0.904}],
+"bounce":[{"name":"Jack Perkins","bf":541,"act":6.1,"exp":4.09,"proj":4.0},{"name":"Jacob Lopez","bf":551,"act":5.47,"exp":3.65,"proj":3.81},{"name":"Tanner Gordon","bf":473,"act":6.68,"exp":5.16,"proj":4.5},{"name":"Jeffrey Springs","bf":630,"act":6.18,"exp":4.95,"proj":4.41},{"name":"Mike Burrows","bf":423,"act":5.99,"exp":4.82,"proj":4.36},{"name":"Kyle Freeland","bf":613,"act":6.65,"exp":5.54,"proj":4.68},{"name":"Michael Lorenzen","bf":619,"act":7.21,"exp":6.15,"proj":4.96},{"name":"Emmet Sheehan","bf":472,"act":4.57,"exp":3.57,"proj":3.81}],
+"regress":[{"name":"Randy Vásquez","bf":587,"act":3.9,"exp":5.54,"proj":4.79},{"name":"Grant Holmes","bf":642,"act":3.44,"exp":5.05,"proj":4.57},{"name":"Nick Lodolo","bf":486,"act":4.97,"exp":6.47,"proj":5.2},{"name":"Martín Pérez","bf":596,"act":3.04,"exp":4.51,"proj":4.33},{"name":"Zack Littell","bf":540,"act":5.21,"exp":6.64,"proj":5.28},{"name":"Michael McGreevy","bf":702,"act":3.95,"exp":5.37,"proj":4.71},{"name":"Merrill Kelly","bf":704,"act":4.94,"exp":6.35,"proj":5.15},{"name":"Eduardo Rodriguez","bf":788,"act":2.9,"exp":4.3,"proj":4.23}]},
+"hitters":{"n_pairs":994,"r_actual":0.473,"r_expected":0.531,"r_gap":-0.381,"over_change":-0.028,"under_change":0.013,
+"bounce":[{"name":"J.T. Realmuto","bf":467,"act":0.275,"exp":0.317,"proj":0.312},{"name":"Bobby Witt Jr.","bf":632,"act":0.345,"exp":0.378,"proj":0.347},{"name":"Salvador Perez","bf":627,"act":0.285,"exp":0.316,"proj":0.313},{"name":"Corey Seager","bf":436,"act":0.32,"exp":0.35,"proj":0.332},{"name":"JJ Wetherholt","bf":619,"act":0.318,"exp":0.347,"proj":0.33},{"name":"Mike Trout","bf":634,"act":0.354,"exp":0.381,"proj":0.349},{"name":"Jackson Merrill","bf":664,"act":0.32,"exp":0.347,"proj":0.33},{"name":"Jarren Duran","bf":608,"act":0.274,"exp":0.301,"proj":0.305}],
+"regress":[{"name":"Nolan Arenado","bf":599,"act":0.349,"exp":0.3,"proj":0.31},{"name":"Ceddanne Rafaela","bf":576,"act":0.332,"exp":0.285,"proj":0.301},{"name":"Javier Sanoja","bf":490,"act":0.342,"exp":0.295,"proj":0.307},{"name":"Ty France","bf":500,"act":0.373,"exp":0.327,"proj":0.325},{"name":"Mickey Moniak","bf":436,"act":0.322,"exp":0.279,"proj":0.298},{"name":"Chandler Simpson","bf":612,"act":0.305,"exp":0.263,"proj":0.289},{"name":"TJ Rumfield","bf":631,"act":0.373,"exp":0.333,"proj":0.328},{"name":"Chase Meidroth","bf":643,"act":0.339,"exp":0.301,"proj":0.31}]}
+};
+
+function tiles(el, items){
+  el.innerHTML=items.map(s=>`<div class="ro"><div class="v ${s.cls||''}">${s.v}</div>
+    <div class="l">${s.l}</div>${s.sub?`<div class="sub">${s.sub}</div>`:''}</div>`).join('');
+}
+function fmt(v,d){ return v.toFixed(d); }
+function predTable(rows, kind){
+  const dp = kind==='pit'?2:3;
+  const aLbl = kind==='pit'?'ERA':'wOBA', eLbl = kind==='pit'?'xERA':'xwOBA', vol = kind==='pit'?'BF':'PA';
+  let h=`<table class="pred"><thead><tr><th>Player</th><th class="num">${vol}</th><th class="num">${aLbl}</th><th class="num">${eLbl}</th><th class="num">Proj&nbsp;27</th></tr></thead><tbody>`;
+  for(const r of rows){
+    h+=`<tr><td>${r.name}</td><td class="num mut">${r.bf}</td><td class="num">${fmt(r.act,dp)}</td>`
+      +`<td class="num mut">${fmt(r.exp,dp)}</td><td class="num proj">${fmt(r.proj,dp)}</td></tr>`;
+  }
+  return h+'</tbody></table>';
+}
+function drawBuckets(){
+  const svg=document.getElementById('chartBuckets'); if(!svg) return;
+  const vb=svg.viewBox.baseVal, W=vb.width, H=vb.height;
+  const b=MLB.pitchers.buckets, padL=46,padR=16,padT=18,padB=44, n=b.length;
+  const slot=(W-padL-padR)/n, bw=slot*0.46, max=1.0;
+  const top=padT, bot=H-padB, mid=(top+bot)/2, half=(bot-top)/2;
+  const y=v=>mid-(v/max)*half;
+  let s='';
+  [-1,-0.5,0,0.5,1].forEach(v=>{ const yy=y(v);
+    s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="${v===0?'#3a4654':'#232c36'}" stroke-width="${v===0?1.5:1}"/>`;
+    s+=`<text x="${padL-7}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#5c6773" font-family="IBM Plex Mono,monospace">${v>0?'+':''}${v.toFixed(1)}</text>`; });
+  b.forEach((d,i)=>{
+    const cx=padL+slot*i+slot/2, v=d.change_mean, col=v>0?'#c17d6a':'#5aa88e';
+    const y0=y(0), yv=y(v);
+    s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${Math.min(y0,yv).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.abs(yv-y0).toFixed(1)}" rx="2" fill="${col}"/>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(v>0?yv-6:yv+14).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="${col}" font-family="IBM Plex Mono,monospace">${v>0?'+':''}${v.toFixed(2)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${H-26}" text-anchor="middle" font-size="9.5" fill="#8c99a6" font-family="IBM Plex Mono,monospace">${d.gap_mean>0?'+':''}${d.gap_mean.toFixed(2)}</text>`;
+  });
+  s+=`<text x="${padL}" y="${H-9}" font-size="9.5" fill="#5c6773">← lucky (ERA under xERA)</text>`;
+  s+=`<text x="${W-padR}" y="${H-9}" text-anchor="end" font-size="9.5" fill="#5c6773">unlucky →</text>`;
+  s+=`<text x="${padL-7}" y="${top-6}" font-size="9" fill="#5c6773">ΔERA next yr</text>`;
+  svg.innerHTML=s;
+}
+let anDrawn=false;
+function renderAnalytics(){
+  const p=MLB.pitchers, b=MLB.hitters;
+  tiles(document.getElementById('pit-stats'),[
+    {v:'0.35', l:'xERA → next ERA', sub:'vs 0.25 for ERA itself'},
+    {v:'−0.49', l:'luck gap → Δ next yr', sub:'strong & negative'},
+    {v:'−1.10', l:'unlucky arms', sub:'mean ERA improvement', cls:'good'},
+    {v:'+0.79', l:'lucky arms', sub:'mean ERA decline', cls:'bad'},
+  ]);
+  tiles(document.getElementById('bat-stats'),[
+    {v:'0.53', l:'xwOBA → next wOBA', sub:'vs 0.47 for wOBA itself'},
+    {v:'−0.38', l:'luck gap → Δ next yr', sub:'weaker than pitchers'},
+    {v:'−28', l:'overperformers', sub:'pts of wOBA next yr', cls:'bad'},
+    {v:'+13', l:'underperformers', sub:'pts of wOBA next yr', cls:'good'},
+  ]);
+  document.getElementById('pit-bounce').innerHTML=predTable(p.bounce,'pit');
+  document.getElementById('pit-regress').innerHTML=predTable(p.regress,'pit');
+  document.getElementById('bat-bounce').innerHTML=predTable(b.bounce,'bat');
+  document.getElementById('bat-regress').innerHTML=predTable(b.regress,'bat');
+  drawBuckets();
+}
+
+/* ---------- tabs ---------- */
+function showTab(which){
+  const map={about:['t-about','tab-about'],pro:['t-pro','tab-pro'],cv:['t-cv','tab-cv'],analytics:['t-an','tab-analytics'],llm:['t-llm','tab-llm']};
+  if(!map[which]) which='about';
+  for(const key in map){ const on=key===which;
+    document.getElementById(map[key][1]).hidden=!on;
+    document.getElementById(map[key][0]).setAttribute('aria-selected',on); }
+  if(which==='analytics' && !anDrawn){ renderAnalytics(); anDrawn=true; }
+  try{ history.replaceState(null,'','#'+which); }catch(e){}
+  window.scrollTo({top:0});
+}
+[['t-about','about'],['t-pro','pro'],['t-cv','cv'],['t-an','analytics'],['t-llm','llm']].forEach(
+  ([btn,key])=>document.getElementById(btn).addEventListener('click',()=>showTab(key)));
+showTab((location.hash||'').slice(1) || 'about');
+</script>
+
+</body></html>
