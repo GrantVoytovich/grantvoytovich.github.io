@@ -1,6 +1,12 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Grant Voytovich</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
   /* Single dark "instrument" theme. Neutral chrome; each project keeps its own
      accent (horse = green, form = amber). Archivo + Inter + IBM Plex Mono. */
@@ -26,8 +32,7 @@
   h1,h2,h3{font-family:"Archivo",system-ui,sans-serif;letter-spacing:-.015em;margin:0}
   .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
   a{color:inherit}
-  .eyebrow{font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.11em;
-    font-weight:600;font-size:.72rem}
+  .eyebrow{font-family:"Archivo",sans-serif;font-weight:700;font-size:.82rem;color:var(--muted)}
 
   /* hero */
   .hero{padding-block:42px 10px}
@@ -39,6 +44,16 @@
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
   .tag{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--muted);
     border:1px solid var(--line2);border-radius:7px;padding:4px 9px}
+
+  /* top bar */
+  .top{padding-block:30px 2px}
+  .top .name{font-family:"Archivo",sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-.01em}
+  .top .role{color:var(--muted);font-size:.86rem;margin-top:1px}
+  /* about */
+  .about{padding-block:34px 12px}
+  .about .intro{font-family:"Archivo",sans-serif;font-size:1.5rem;font-weight:700;color:var(--text);line-height:1.3;letter-spacing:-.01em;margin-bottom:18px;max-width:40ch}
+  .about p{color:#cdd6de;font-size:1.05rem;line-height:1.75;max-width:62ch;margin:0 0 16px}
+  .about p b{color:var(--text);font-weight:600}
 
   /* tab bar */
   .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-top:24px;overflow-x:auto;scrollbar-width:none}
@@ -53,7 +68,7 @@
   .project{border-top:1px solid var(--line);padding-block:30px 10px}
   .project:first-child{border-top:0}
   .p-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
-  .p-num{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:var(--pc)}
+  .p-num{display:none}
   .project h2{font-size:1.5rem;font-weight:800}
   .p-kind{color:var(--muted);font-size:.82rem}
   .p-lede{color:#cdd6de;font-size:1.02rem;max-width:62ch;margin:4px 0 14px}
@@ -163,21 +178,15 @@
   footer{border-top:1px solid var(--line);padding-top:18px;margin-top:22px;color:var(--faint);font-size:.8rem}
   footer .mono{color:var(--muted)}
 </style>
+</head>
+<body>
+
 
 <div class="wrap">
 
-  <header class="hero">
-    <div class="eyebrow">Management consultant · AI automation &amp; analytics</div>
-    <h1>Grant Voytovich</h1>
-    <p class="lede">I find manual, repetitive work and replace it with <b>AI agents and automations</b> —
-      today as a management consultant, before that building internal tools at a fintech, with a data
-      background that runs through professional baseball. Alongside that, I build computer-vision,
-      predictive, and LLM projects of my own.</p>
-    <div class="tags">
-      <span class="tag">AI agents</span><span class="tag">Python · SQL · R</span>
-      <span class="tag">LLM APIs</span><span class="tag">AWS</span>
-      <span class="tag">Computer vision</span><span class="tag">Analytics</span>
-    </div>
+  <header class="top">
+    <div class="name">Grant Voytovich</div>
+    <div class="role">AI, automation &amp; analytics</div>
   </header>
 
   <div class="tabs" role="tablist" aria-label="Portfolio sections">
@@ -191,30 +200,24 @@
   <!-- ===================== TAB 1: COMPUTER VISION ===================== -->
   <!-- TAB: ABOUT -->
   <div id="tab-about">
-  <section class="project" style="--pc:var(--mlb)">
-    <div class="p-head"><span class="p-num">00</span><h2>About</h2><span class="p-kind">Who I am</span></div>
-    <p class="about-lede">I'm a builder and analyst who turns <b>manual, repetitive work into AI agents
-      and automations</b>. I'm currently a <b>management consultant at Carpedia International</b>, finding
-      where AI can streamline client operations; before that, on a <b>fintech's BaaS team</b>, I shipped
-      internal agents that cut 10+ hours of manual work a week. My data background runs through
-      <b>professional baseball</b> — a data-quality fellowship with the <b>Minnesota Twins</b> and leading
-      analytics for a Division I program — which is why half of my personal projects are sports-driven.</p>
-    <div class="enjoy">
-      <div class="e"><b>Turning grunt work into tools</b><span>I like finding the manual, repetitive thing a team dreads and replacing it with something that just runs.</span></div>
-      <div class="e"><b>End-to-end building</b><span>Data, model, API, and a clean interface — I enjoy owning the whole path from messy input to a usable product.</span></div>
-      <div class="e"><b>Baseball &amp; data</b><span>A data fellowship with the Minnesota Twins and leading analytics for a Division I program — baseball is where my love of modeling started, and half these projects grew from it.</span></div>
-      <div class="e"><b>Systems that show their work</b><span>Cited answers, stated limits, numbers you can trace back to the source — I care that a tool is honest about what it knows.</span></div>
-    </div>
+  <section class="about" style="--pc:var(--mlb)">
+    <p class="intro">I find manual, repetitive work and replace it with AI agents and automations.</p>
+    <p>Right now I'm a <b>management consultant at Carpedia International</b>, where most of my work is
+      operational — mapping out current-state processes, finding the opportunities, and driving change
+      with clients through change management and stakeholder engagement, bringing AI in where it helps.
+      Before that, on a <b>fintech's BaaS team</b>, I built internal AI agents and automations that cut
+      10+ hours of manual work a week.</p>
+    <p>My data background runs through baseball — a data-quality fellowship with the <b>Minnesota Twins</b>
+      and running analytics for a Division I program. That's where my love of modeling started, and it's
+      why a lot of my own projects are sports-driven. On the side I build computer-vision, predictive,
+      and LLM projects end to end.</p>
+    <p>The part I enjoy most is mapping out a current-state process, spotting the opportunity, and using AI
+      and change-management to make the change actually stick with the people doing the work.</p>
+    <p>Away from the screen, I'm usually staying active, reading, traveling, trying new food, or hanging out
+      with family and friends.</p>
     <div class="contact">
       <a href="mailto:grantvoytovich@gmail.com">grantvoytovich@gmail.com</a><span>·</span><a href="https://www.linkedin.com/in/grant-voytovich/" target="_blank" rel="noopener">linkedin.com/in/grant-voytovich</a>
     </div>
-  </section>
-  <section class="roadmap">
-    <div class="eyebrow" style="color:var(--mlb)">What's here</div>
-    <h2>Four more tabs</h2>
-    <p><b>Professional Work</b> — AI agents I built at Thread Bank. <b>Computer Vision</b>,
-      <b>Predictive Analytics</b>, and <b>Generative AI</b> — projects of my own, each with working
-      code. Start anywhere.</p>
   </section>
   </div><!-- /tab-about -->
 
@@ -728,4 +731,5 @@ function showTab(which){
 showTab((location.hash||'').slice(1) || 'about');
 </script>
 
-</body></html>
+</body>
+</html>
