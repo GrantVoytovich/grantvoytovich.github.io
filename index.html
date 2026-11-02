@@ -63,6 +63,9 @@
   .pro-intro h2,.intro-block h2{font-size:1.6rem;font-weight:800;margin:10px 0 10px;letter-spacing:-.02em}
   .pro-intro p,.intro-block p{color:#34373c;font-size:1.04rem;line-height:1.75;max-width:64ch;margin:0}
   .pro-intro p b,.intro-block p b{color:var(--text);font-weight:600}
+  /* sub-section headers inside the Personal Projects tab */
+  .group-head{border-top:2px solid var(--line2);margin-top:28px;padding-top:30px}
+  .group-head h2,.an-head.group-head h2{font-size:1.3rem}
 
   /* project / case study */
   .project,.case{border-top:1px solid var(--line);padding-block:34px 14px}
@@ -180,9 +183,7 @@
   <div class="tabs" role="tablist" aria-label="Portfolio sections">
     <button role="tab" id="t-about" aria-selected="true" aria-controls="tab-about">About</button>
     <button role="tab" id="t-pro" aria-selected="false" aria-controls="tab-pro">Professional Work</button>
-    <button role="tab" id="t-cv" aria-selected="false" aria-controls="tab-cv">Computer Vision</button>
-    <button role="tab" id="t-an" aria-selected="false" aria-controls="tab-analytics">Predictive Analytics</button>
-    <button role="tab" id="t-llm" aria-selected="false" aria-controls="tab-llm">Generative AI</button>
+    <button role="tab" id="t-projects" aria-selected="false" aria-controls="tab-projects">Personal Projects</button>
   </div>
 
   <!-- ===================== TAB 1: COMPUTER VISION ===================== -->
@@ -198,10 +199,10 @@
       status, and tracking daily action items. Together they cut more than ten hours of manual work a
       week. The part I enjoyed most was fitting them into people's actual workflow so they stuck, and
       that's the kind of work I want to keep doing.</p>
-    <p>I also build end to end on my own time. The projects here cover computer vision, predictive
-      modeling, and retrieval-augmented generation, and most of them are built around sports. That traces
-      back to baseball: a data-quality fellowship with the <b>Minnesota Twins</b> and running analytics for
-      a Division I program as a player, which is where I learned to trust data.</p>
+    <p>On my own time I build projects end to end. The ones here cover computer vision, predictive
+      modeling, and retrieval-augmented generation, and most are built around sports, which comes from my
+      baseball background. I did a data-quality fellowship with the <b>Minnesota Twins</b> and ran
+      analytics for a Division I program while playing on it, and that's where I learned to trust data.</p>
     <p>Outside of work I'm usually staying active, reading, traveling, trying new food, or spending time
       with family and friends.</p>
     <div class="contact">
@@ -215,11 +216,11 @@
   <div class="pro-intro">
     <div class="eyebrow">Professional work · Thread Bank</div>
     <h2>AI agents I built in BaaS operations</h2>
-    <p>As an analyst on the Banking-as-a-Service team, I kept running into the same problem. The work that
-      mattered was trapped in people's inboxes and in long documents, and someone had to redo it by hand
-      every week. So I built a handful of internal AI agents to take that work off the team's plate.
-      Together they saved more than ten hours a week. The write-ups below stay high level. I've left out
-      partner names and specific numbers.</p>
+    <p>As an analyst on the Banking-as-a-Service team, I kept running into the same problem. The
+      information people needed was sitting in inboxes and long documents, and someone had to dig it out
+      by hand, over and over. So I built three internal AI agents to do that digging for them. Together
+      they saved the team more than ten hours a week. The write-ups below stay high level, and I've left
+      out partner names and specific numbers.</p>
   </div>
 
   <section class="case">
@@ -230,14 +231,18 @@
       <div><dt>How it's used</dt><dd>Leadership checks any contract's dates, fees, and terms in the app instead of reading the PDF</dd></div>
       <div><dt>What changed</dt><dd>Answers that used to take a manual read now come back in seconds, and nothing slips by on a renewal or a fee</dd></div>
     </dl>
-    <p>We had legal agreements with a lot of partners, and each one buried the important details inside a
-      long PDF. When a contract expired, the terms each side had to follow, the fees owed back and forth.
-      Any time an executive wanted to know when an agreement ended or how much a partner owed us, someone
-      had to open the document and read through it to find the answer.</p>
-    <p>I built an agent that reads every agreement, pulls out the key terms, and keeps them together in one
-      app hosted on AWS. Instead of digging through PDFs, leadership opens the app and sees every contract
-      in one place, with the dates, fees, and obligations already pulled out and kept current as the
-      agreements change.</p>
+    <p><b>The problem.</b> We had legal agreements with a lot of partners, and each one buried the
+      important details inside a long PDF: when the contract expired, what each side had agreed to do,
+      and what fees were owed in each direction. Any time an executive wanted to know when an agreement
+      ended or how much a partner owed us, someone had to open the document and read through it to find
+      the answer.</p>
+    <p><b>What the agent does.</b> It reads each agreement, identifies the key terms (expiration and
+      renewal dates, fee schedules, and the obligations on both sides), and writes them into a structured
+      record. Those records feed an app hosted on AWS that shows every contract side by side and stays
+      current as agreements are added or amended.</p>
+    <p><b>How it gets used.</b> Instead of digging through PDFs, leadership opens the app, finds the
+      partner, and sees the dates, fees, and obligations laid out in one place. A question that used to
+      mean reading a contract now takes a few seconds.</p>
   </section>
 
   <section class="case">
@@ -248,13 +253,16 @@
       <div><dt>How it's used</dt><dd>Each partner receives an automatic status digest every two weeks</dd></div>
       <div><dt>What changed</dt><dd>Status that used to live in email threads became a consistent update with clear owed items on both sides</dd></div>
     </dl>
-    <p>Our work with each partner moved through a lot of email. Status updates, open items, and requests
-      were spread across threads, which made it hard for anyone to see where an initiative actually stood
-      or what was still outstanding on either side.</p>
-    <p>I built an agent that pulls from several of our data sources and writes a report for each partner
-      every two weeks. The digest lays out where our joint initiatives stand, what we still need from the
-      partner, and what they're waiting on from us. Both sides got one clear picture instead of a
-      scattered email trail.</p>
+    <p><b>The problem.</b> Our work with each partner moved through a lot of email. Status updates, open
+      items, and requests were spread across threads, which made it hard for anyone, on our side or
+      theirs, to see where an initiative actually stood or what was still outstanding.</p>
+    <p><b>What the agent does.</b> Every two weeks it gathers the latest status on each partner's
+      initiatives from our internal tracking sources, writes a plain-language summary for that partner,
+      and sends it. Each digest covers three things: where our joint initiatives stand, what we still
+      need from the partner, and what they're waiting on from us.</p>
+    <p><b>How it gets used.</b> Partners get a consistent update on a schedule they can count on, and our
+      team stops rebuilding the same status email by hand. Both sides work from one clear picture instead
+      of a scattered email trail.</p>
   </section>
 
   <section class="case">
@@ -265,30 +273,44 @@
       <div><dt>How it's used</dt><dd>Everyone gets a daily message with their own action items, pulled from email, the PM tool, and chat</dd></div>
       <div><dt>What changed</dt><dd>No more tracking to-dos by hand across three tools, and fewer things lost between them</dd></div>
     </dl>
-    <p>Our to-dos were scattered across email, our project management software, and our internal chat
-      tools. Everyone had to read through all of it and keep their own running list of what needed to get
-      done, which was easy to fall behind on.</p>
-    <p>I built an agent that reads across those sources and sends each person a daily update with the
-      action items that are theirs. Instead of piecing a to-do list together every morning, each teammate
-      starts the day with one already put together for them.</p>
+    <p><b>The problem.</b> Our to-dos were scattered across email, our project management software, and
+      our internal chat tools. Everyone had to read through all of it and keep their own running list of
+      what needed to get done, which was easy to fall behind on.</p>
+    <p><b>What the agent does.</b> Each morning it scans new email, project updates, and chat messages
+      from the previous day, picks out anything that needs action, works out who it belongs to, and sends
+      each person a short message listing their own items.</p>
+    <p><b>How it gets used.</b> Instead of piecing a to-do list together every morning, each teammate
+      starts the day with one already built for them, and fewer things get lost between tools.</p>
   </section>
   </div><!-- /tab-pro -->
 
-  <div id="tab-cv" hidden>
+  <!-- TAB: PERSONAL PROJECTS -->
+  <div id="tab-projects" hidden>
   <div class="intro-block">
+    <div class="eyebrow">Personal projects</div>
+    <h2>Things I build on my own time</h2>
+    <p>These are projects I built end to end, from the raw input to a working app, mostly on evenings and
+      weekends. Most of them are built around sports because that's what I know best. They fall into
+      three groups: reading motion from video, finding signal in baseball data, and answering questions
+      from documents.</p>
+  </div>
+
+  <div id="tab-cv">
+  <div class="intro-block group-head">
     <div class="eyebrow">Computer vision</div>
     <h2>Reading motion from video</h2>
-    <p>Four tools I built end to end that turn ordinary video into measurements: a horse's gait and pace,
-      a lifter's form, a pitcher's mechanics, a swing. Each one started as a favor for someone who wanted
-      to see their own movement more clearly.</p>
+    <p>Four tools that turn ordinary video into measurements: a horse's gait and pace, a lifter's form, a
+      pitcher's mechanics, a swing. Each one started because someone I know wanted to understand movement
+      they cared about, whether that was a friend's horses or their own form.</p>
   </div>
 
   <!-- PROJECT 1 — HORSE -->
   <section class="project" style="--pc:var(--horse)">
     <div class="p-head"><span class="p-num">01</span><h2>Horse Motion Analyzer</h2>
       <span class="p-kind">Detection &amp; tracking</span></div>
-    <p class="p-lede">Reads a horse's <b>relative speed, gait, and stride cadence</b> straight
-      from video. There's no calibration step; it measures movement in the horse's own body lengths.</p>
+    <p class="p-lede">Reads a horse's <b>relative speed, gait, and stride cadence</b> straight from
+      video. There's no calibration step: instead of needing to know real distances in the frame, it
+      measures how far the horse moves in units of its own body length.</p>
     <dl class="spec">
       <div><dt>Built for</dt><dd>A family friend who owns standardbred horses and wanted to use AI to understand them</dd></div>
       <div><dt>How it's used</dt><dd>Upload a race or training clip and read the horse's gait, pace, and stride cadence, with no calibration or special gear</dd></div>
@@ -309,9 +331,10 @@
       <div class="csub">Body lengths per second, across the clip</div>
       <svg id="chartHorse" viewBox="0 0 680 170" preserveAspectRatio="none" role="img" aria-label="Horse speed over the clip, peaking near 1.7 body lengths per second"></svg>
     </div>
-    <p class="how"><b>How:</b> YOLOv8 detects the horse each frame, ByteTrack keeps it the same
-      horse, and displacement ÷ body length gives a scale-invariant speed. Cadence comes from
-      the FFT of the vertical bob.</p>
+    <p class="how"><b>How:</b> YOLOv8 finds the horse in every frame, ByteTrack keeps following the same
+      horse from one frame to the next, and dividing how far it moves by its body length gives a speed
+      that doesn't depend on how far away the camera is. Stride cadence comes from the rhythm of the
+      horse's up-and-down motion.</p>
     <div class="p-links">
       <a class="btn code" href="https://github.com/GrantVoytovich/horse-speed-analyzer" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
@@ -346,9 +369,9 @@
       <div class="csub">Degrees over time. Each dip is a rep, and the deepest point is marked</div>
       <svg id="chartForm" viewBox="0 0 680 180" preserveAspectRatio="none" role="img" aria-label="Knee angle across the squat set, bottoming near 52 degrees"></svg>
     </div>
-    <p class="how"><b>How:</b> A YOLOv8-pose model places 17 body keypoints each frame. Joint angles
-      come from the hip, knee and ankle geometry; reps, depth and symmetry come from the
-      knee-angle signal with thresholds that adapt to each person's range of motion.</p>
+    <p class="how"><b>How:</b> A YOLOv8-pose model places 17 body keypoints in each frame. The knee
+      angle comes from the positions of the hip, knee, and ankle, and reps, depth, and symmetry are all
+      read off that knee-angle signal, with thresholds that adapt to each person's range of motion.</p>
     <div class="p-links">
       <a class="btn code" href="https://github.com/GrantVoytovich/form-check" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
@@ -389,10 +412,11 @@
         <span><i style="background:#0f766e"></i>Arm</span>
       </div>
     </div>
-    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints and auto-detects the throwing arm.
-      Arm speed is the wrist's velocity, separation is the hip-line vs shoulder-line angle, and the
-      sequence compares <b>when</b> each segment's rotation peaks. 2-D from one camera, so the
-      rotational numbers are estimates.</p>
+    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints and works out which arm is throwing. Arm
+      speed is how fast the wrist moves, separation is the angle between the line of the hips and the
+      line of the shoulders, and the sequence compares <b>when</b> each body segment reaches its fastest
+      rotation. Because it works from one camera in 2-D, the rotation numbers are estimates rather than
+      exact measurements.</p>
     <div class="p-links">
       <a class="btn code" href="https://github.com/GrantVoytovich/pitch-analyzer" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
@@ -433,10 +457,11 @@
         <span><i style="background:#0f766e"></i>Hands</span>
       </div>
     </div>
-    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints; the hands are the wrist midpoint.
-      The sequence is measured over the downswing (transition → impact) so follow-through
-      rotation doesn't masquerade as a late peak. 2-D from one camera, so the rotational
-      numbers are estimates.</p>
+    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints, with the hands taken as the midpoint
+      between the wrists. The sequence is measured only over the downswing (from the top of the swing to
+      impact) so that rotation during the follow-through doesn't get mistaken for part of the swing.
+      Because it works from one camera in 2-D, the rotation numbers are estimates rather than exact
+      measurements.</p>
     <div class="p-links">
       <a class="btn code" href="https://github.com/GrantVoytovich/swing-analyzer" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
@@ -445,28 +470,18 @@
     </div>
   </section>
 
-  <section class="roadmap">
-    <div class="eyebrow">Where it goes</div>
-    <h2>One engine, many sports</h2>
-    <p>Four tools share one pose-and-kinematics core, which is the whole point: the same approach
-      carries from a racehorse to a lifter to a pitcher to a golf swing. Next up is a down-the-line
-      view for swing plane, and multi-camera capture to turn the 2-D estimates into true 3-D
-      measurements.</p>
-  </section>
-
   </div><!-- /tab-cv -->
 
-  <!-- ===================== TAB 2: PREDICTIVE ANALYTICS ===================== -->
-  <div id="tab-analytics" class="mlb" hidden>
+  <div id="tab-analytics" class="mlb">
 
-    <div class="an-head">
+    <div class="an-head group-head">
       <div class="eyebrow">Predictive analytics · MLB</div>
       <h2>2027 Bounce-Back &amp; Regression</h2>
-      <p class="p-lede">Which hitters and pitchers are set up to rebound or fall off next year? The
-        signal I used: when a player's <b>actual</b> results (ERA, wOBA) drift far from their
-        <b>expected</b> stats (xERA, xwOBA), the versions that strip out luck, they tend to snap back
-        toward the expected mark. I validated it on six seasons (2021 to 2026), then applied it to
-        2026 to project 2027.</p>
+      <p class="p-lede">Which hitters and pitchers are set up to rebound or fall off next year? The idea
+        is simple. <b>Expected</b> stats (xERA, xwOBA) estimate what a player's results should have been
+        based on the quality of their contact, which strips out luck. When a player's <b>actual</b>
+        numbers (ERA, wOBA) drift far from those expected numbers, they tend to snap back the next
+        year. I tested that on six seasons (2021 to 2026), then used 2026 to project 2027.</p>
       <dl class="spec">
         <div><dt>Built for</dt><dd>A personal project that grew out of my baseball analytics background</dd></div>
         <div><dt>How it's used</dt><dd>It ranks which 2026 hitters and pitchers are set up to bounce back or regress in 2027, using luck-adjusted expected stats</dd></div>
@@ -478,8 +493,9 @@
       <h3>Does the thesis hold? Pitchers <span style="color:var(--muted);font-weight:400">(578 season-pairs, ≥300 BF)</span></h3>
       <div class="readout" id="pit-stats"></div>
       <p class="how" style="margin:12px 0 4px"><b>Yes.</b> xERA predicts next year's ERA better than ERA
-        itself, and the actual-minus-expected gap predicts the next-year change at r = −0.49. Bucket
-        2026 pitchers by how lucky they were and the next-year effect is monotonic:</p>
+        itself, and the gap between actual and expected predicts the next-year change (r = −0.49). Sort
+        2026 pitchers into groups by how lucky they were and the pattern holds in every group: the
+        luckier the pitcher, the more they fell off the next year.</p>
       <div class="chartcard">
         <h3>Next-year ERA change, by 2026 luck</h3>
         <div class="csub">Pitchers in five buckets by their 2026 ERA−xERA gap. Lucky arms (ERA under xERA) got worse; unlucky arms bounced back.</div>
@@ -490,16 +506,19 @@
     <div class="panel">
       <h3>Hitters <span style="color:var(--muted);font-weight:400">(994 season-pairs, ≥300 PA)</span></h3>
       <div class="readout" id="bat-stats"></div>
-      <p class="how" style="margin-top:12px">Same direction, much weaker. Hitting is mostly skill, so wOBA
-        is far stickier than ERA and there's less luck to regress, so the bounce-back edge is real but small.</p>
+      <p class="how" style="margin-top:12px">Same direction, much weaker. Hitting is mostly skill, so a
+        hitter's wOBA is far more stable than a pitcher's ERA and there's less luck to wash out. The
+        bounce-back edge is real but small.</p>
     </div>
 
     <div class="an-head" style="padding-block:6px 2px">
       <div class="eyebrow">2027 projections</div>
       <h2 style="font-size:1.3rem">The names</h2>
     </div>
-    <p class="how" style="margin-top:-2px">Ranked by the size of the 2026 luck gap. Projection =
-      a fit of next-year ≈ actual + expected, applied to 2026. BF/PA shown so you can weight sample size.</p>
+    <p class="how" style="margin-top:-2px">Players are ranked by how big their 2026 gap between actual and
+      expected was. The projection comes from a simple model, fit on past seasons, that combines a
+      player's actual and expected numbers to predict the next year. BF (batters faced) and PA (plate
+      appearances) are shown so you can judge sample size.</p>
 
     <h3 style="font-size:1.1rem;margin:14px 0 8px">Pitchers <span style="color:var(--muted);font-size:.8rem;font-weight:400">· 2026 ERA → projected 2027</span></h3>
     <div class="predgrid">
@@ -515,10 +534,11 @@
 
     <div class="explain">
       <span class="k">Read&nbsp;it&nbsp;right</span>
-      <div>This is <b>one signal, not a projection system</b>. It ignores age, injury, role and park, and
-        the extreme names are often small-sample. Expected stats carry their own error, and it works much
-        better for pitchers (ERA is luck-heavy) than hitters. Think of it as a read on where the luck fell
-        in 2026, a prior to weigh alongside everything else rather than a point forecast.</div>
+      <div>This is <b>one signal, not a full projection system</b>. It ignores age, injury, role and
+        ballpark, and the most extreme names often come from small samples. Expected stats have their own
+        error, and the approach works much better for pitchers (ERA has a lot of luck in it) than for
+        hitters. Think of it as a read on who got lucky or unlucky in 2026, something to weigh alongside
+        everything else rather than a firm prediction.</div>
     </div>
 
     <div class="p-links" style="margin-top:14px">
@@ -529,9 +549,8 @@
 
   </div><!-- /tab-analytics -->
 
-  <!-- ===================== TAB 3: GENERATIVE AI ===================== -->
-  <div id="tab-llm" class="llm" hidden>
-  <div class="intro-block">
+  <div id="tab-llm" class="llm">
+  <div class="intro-block group-head">
     <div class="eyebrow">Generative AI</div>
     <h2>Answers grounded in the document</h2>
     <p>A retrieval-augmented generation app that answers questions from a PDF and cites its sources. I
@@ -568,11 +587,12 @@
     </div>
     <div class="demo-cap">Example on a sample member handbook. The answer cites the passages it drew from, and in the app each citation jumps to its source.</div>
 
-    <p class="how"><b>How:</b> the PDF is split into overlapping <b>chunks</b>, each embedded with a
-      local <b>sentence-transformers</b> model. The question is embedded the same way and
-      <b>cosine similarity</b> ranks the passages. The top matches, and only those, go to <b>Claude</b>
-      with instructions to answer from them and cite each claim. Retrieval is free and local, so the app
-      runs without an API key and shows the passages it found; adding a key turns on the written answers.</p>
+    <p class="how"><b>How:</b> the PDF is split into overlapping <b>chunks</b>, and each chunk is turned
+      into a numeric fingerprint (an <b>embedding</b>) by a small model that runs locally. The question
+      gets the same treatment, and the passages whose fingerprints are closest to it are ranked highest.
+      Only the top matches go to <b>Claude</b>, with instructions to answer from them and cite each claim.
+      Because the search step runs locally, the app works without an API key and shows you the passages
+      it found; adding a key turns on the written answers.</p>
     <div class="p-links">
       <a class="btn code" href="https://github.com/GrantVoytovich/docchat" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
@@ -581,14 +601,16 @@
     </div>
   </section>
 
-  <section class="roadmap">
-    <div class="eyebrow">The arc</div>
-    <h2>See, predict, reason</h2>
-    <p>Three ways of turning raw input into insight: computer vision that reads motion from video,
-      models that find signal in data, and retrieval-augmented generation that answers from documents
-      with its sources shown. Different techniques, one engineering throughline.</p>
-  </section>
   </div><!-- /tab-llm -->
+
+  <section class="roadmap">
+    <div class="eyebrow">What ties them together</div>
+    <h2>Same approach, three kinds of input</h2>
+    <p>Video, baseball stats, and documents are very different inputs, but each project follows the
+      same path: take something messy from the real world, build the pipeline that turns it into
+      something a person can act on, and ship it as a working app rather than a notebook.</p>
+  </section>
+  </div><!-- /tab-projects -->
 
   <footer>
     <span class="mono">Computer vision</span>: YOLOv8 + OpenCV, processed server-side. Demo clips are live tool output.
@@ -737,16 +759,17 @@ function renderAnalytics(){
 
 /* ---------- tabs ---------- */
 function showTab(which){
-  const map={about:['t-about','tab-about'],pro:['t-pro','tab-pro'],cv:['t-cv','tab-cv'],analytics:['t-an','tab-analytics'],llm:['t-llm','tab-llm']};
+  if(which==='cv'||which==='analytics'||which==='llm') which='projects';
+  const map={about:['t-about','tab-about'],pro:['t-pro','tab-pro'],projects:['t-projects','tab-projects']};
   if(!map[which]) which='about';
   for(const key in map){ const on=key===which;
     document.getElementById(map[key][1]).hidden=!on;
     document.getElementById(map[key][0]).setAttribute('aria-selected',on); }
-  if(which==='analytics' && !anDrawn){ renderAnalytics(); anDrawn=true; }
+  if(which==='projects' && !anDrawn){ renderAnalytics(); anDrawn=true; }
   try{ history.replaceState(null,'','#'+which); }catch(e){}
   window.scrollTo({top:0});
 }
-[['t-about','about'],['t-pro','pro'],['t-cv','cv'],['t-an','analytics'],['t-llm','llm']].forEach(
+[['t-about','about'],['t-pro','pro'],['t-projects','projects']].forEach(
   ([btn,key])=>document.getElementById(btn).addEventListener('click',()=>showTab(key)));
 showTab((location.hash||'').slice(1) || 'about');
 </script>
