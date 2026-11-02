@@ -195,14 +195,15 @@
       breaks down, and leading the change with the people who do the work every day. It has taught me
       that the hard part of improving a process is rarely the idea. It's getting a team to adopt it.</p>
     <p>Before consulting I was an analyst on a <b>fintech's Banking-as-a-Service team</b>, where I built
-      internal AI agents that took real work off the team's plate: reviewing contracts, reporting partner
-      status, and tracking daily action items. Together they cut more than ten hours of manual work a
-      week. The part I enjoyed most was fitting them into people's actual workflow so they stuck, and
-      that's the kind of work I want to keep doing.</p>
+      a range of internal AI agents that took real work off the team's plate, from reviewing contracts to
+      reporting partner status to tracking daily action items. Together they cut more than ten hours of
+      manual work a week. The part I enjoyed most was fitting them into people's actual workflow so they
+      stuck, and that's the kind of work I want to keep doing.</p>
     <p>On my own time I build projects end to end. The ones here cover computer vision, predictive
       modeling, and retrieval-augmented generation, and most are built around sports, which comes from my
-      baseball background. I did a data-quality fellowship with the <b>Minnesota Twins</b> and ran
-      analytics for a Division I program while playing on it, and that's where I learned to trust data.</p>
+      baseball background. I played Division I baseball and, after graduating, ran the analytics
+      department for that program. I also did a data-quality fellowship with the <b>Minnesota Twins</b>.
+      That's where I learned to trust data.</p>
     <p>Outside of work I'm usually staying active, reading, traveling, trying new food, or spending time
       with family and friends.</p>
     <div class="contact">
@@ -218,69 +219,42 @@
     <h2>AI agents I built in BaaS operations</h2>
     <p>As an analyst on the Banking-as-a-Service team, I kept running into the same problem. The
       information people needed was sitting in inboxes and long documents, and someone had to dig it out
-      by hand, over and over. So I built three internal AI agents to do that digging for them. Together
-      they saved the team more than ten hours a week. The write-ups below stay high level, and I've left
-      out partner names and specific numbers.</p>
+      by hand, over and over. So I built a number of internal AI agents to do that digging for them.
+      Together they saved the team more than ten hours a week. The three below are examples. They stay
+      high level, with partner names and specific numbers left out.</p>
   </div>
 
   <section class="case">
     <h2>Legal Agreement Review Agent</h2>
     <p class="case-sub">A live view of every partner contract, for the leadership team.</p>
     <dl class="spec">
-      <div><dt>Built for</dt><dd>The executive team at Thread Bank</dd></div>
-      <div><dt>How it's used</dt><dd>Leadership checks any contract's dates, fees, and terms in the app instead of reading the PDF</dd></div>
-      <div><dt>What changed</dt><dd>Answers that used to take a manual read now come back in seconds, and nothing slips by on a renewal or a fee</dd></div>
+      <div><dt>The problem</dt><dd>We had legal agreements with a lot of partners, and each one buried the important details inside a long PDF: when it expired, what each side had agreed to do, and what fees were owed in each direction. Answering a simple question meant someone opening the document and reading through it.</dd></div>
+      <div><dt>What it does</dt><dd>It reads each agreement, identifies the key terms (expiration and renewal dates, fee schedules, and the obligations on both sides), and writes them into a structured record. Those records feed an app hosted on AWS that shows every contract side by side and stays current as agreements are added or amended.</dd></div>
+      <div><dt>Who uses it</dt><dd>The executive team. Instead of digging through PDFs, leadership opens the app, finds the partner, and sees the dates, fees, and obligations laid out in one place.</dd></div>
+      <div><dt>What changed</dt><dd>A question that used to mean reading a contract now takes a few seconds, and nothing slips by on a renewal or a fee.</dd></div>
     </dl>
-    <p><b>The problem.</b> We had legal agreements with a lot of partners, and each one buried the
-      important details inside a long PDF: when the contract expired, what each side had agreed to do,
-      and what fees were owed in each direction. Any time an executive wanted to know when an agreement
-      ended or how much a partner owed us, someone had to open the document and read through it to find
-      the answer.</p>
-    <p><b>What the agent does.</b> It reads each agreement, identifies the key terms (expiration and
-      renewal dates, fee schedules, and the obligations on both sides), and writes them into a structured
-      record. Those records feed an app hosted on AWS that shows every contract side by side and stays
-      current as agreements are added or amended.</p>
-    <p><b>How it gets used.</b> Instead of digging through PDFs, leadership opens the app, finds the
-      partner, and sees the dates, fees, and obligations laid out in one place. A question that used to
-      mean reading a contract now takes a few seconds.</p>
   </section>
 
   <section class="case">
     <h2>Partner Status Newsletter</h2>
     <p class="case-sub">A recurring status update sent to each partner.</p>
     <dl class="spec">
-      <div><dt>Built for</dt><dd>Our fintech partners, and the internal team managing them</dd></div>
-      <div><dt>How it's used</dt><dd>Each partner receives an automatic status digest every two weeks</dd></div>
-      <div><dt>What changed</dt><dd>Status that used to live in email threads became a consistent update with clear owed items on both sides</dd></div>
+      <div><dt>The problem</dt><dd>Our work with each partner moved through a lot of email. Status updates, open items, and requests were spread across threads, so it was hard for anyone, on our side or theirs, to see where an initiative stood or what was still outstanding.</dd></div>
+      <div><dt>What it does</dt><dd>Every two weeks it gathers the latest status on each partner's initiatives from our internal tracking sources, writes a plain-language summary for that partner, and sends it. Each digest covers where our joint initiatives stand, what we still need from the partner, and what they're waiting on from us.</dd></div>
+      <div><dt>Who uses it</dt><dd>Our fintech partners, and the internal team that manages them. Partners get a consistent update on a schedule they can count on, and our team stops rebuilding the same status email by hand.</dd></div>
+      <div><dt>What changed</dt><dd>Status that used to live in scattered email threads became one clear picture, with the items owed on both sides spelled out.</dd></div>
     </dl>
-    <p><b>The problem.</b> Our work with each partner moved through a lot of email. Status updates, open
-      items, and requests were spread across threads, which made it hard for anyone, on our side or
-      theirs, to see where an initiative actually stood or what was still outstanding.</p>
-    <p><b>What the agent does.</b> Every two weeks it gathers the latest status on each partner's
-      initiatives from our internal tracking sources, writes a plain-language summary for that partner,
-      and sends it. Each digest covers three things: where our joint initiatives stand, what we still
-      need from the partner, and what they're waiting on from us.</p>
-    <p><b>How it gets used.</b> Partners get a consistent update on a schedule they can count on, and our
-      team stops rebuilding the same status email by hand. Both sides work from one clear picture instead
-      of a scattered email trail.</p>
   </section>
 
   <section class="case">
     <h2>Daily Action-Item Agent</h2>
     <p class="case-sub">A personalized daily to-do list for the team.</p>
     <dl class="spec">
-      <div><dt>Built for</dt><dd>My team at Thread Bank</dd></div>
-      <div><dt>How it's used</dt><dd>Everyone gets a daily message with their own action items, pulled from email, the PM tool, and chat</dd></div>
-      <div><dt>What changed</dt><dd>No more tracking to-dos by hand across three tools, and fewer things lost between them</dd></div>
+      <div><dt>The problem</dt><dd>Our to-dos were scattered across email, our project management software, and our internal chat tools. Everyone had to read through all of it and keep their own running list, which was easy to fall behind on.</dd></div>
+      <div><dt>What it does</dt><dd>Each morning it scans the previous day's new email, project updates, and chat messages, picks out anything that needs action, works out who it belongs to, and sends each person a short message listing their own items.</dd></div>
+      <div><dt>Who uses it</dt><dd>My team. Instead of piecing a to-do list together every morning, each teammate starts the day with one already built for them.</dd></div>
+      <div><dt>What changed</dt><dd>No more tracking to-dos by hand across three tools, and fewer things lost between them.</dd></div>
     </dl>
-    <p><b>The problem.</b> Our to-dos were scattered across email, our project management software, and
-      our internal chat tools. Everyone had to read through all of it and keep their own running list of
-      what needed to get done, which was easy to fall behind on.</p>
-    <p><b>What the agent does.</b> Each morning it scans new email, project updates, and chat messages
-      from the previous day, picks out anything that needs action, works out who it belongs to, and sends
-      each person a short message listing their own items.</p>
-    <p><b>How it gets used.</b> Instead of piecing a to-do list together every morning, each teammate
-      starts the day with one already built for them, and fewer things get lost between tools.</p>
   </section>
   </div><!-- /tab-pro -->
 
@@ -289,10 +263,10 @@
   <div class="intro-block">
     <div class="eyebrow">Personal projects</div>
     <h2>Things I build on my own time</h2>
-    <p>These are projects I built end to end, from the raw input to a working app, mostly on evenings and
-      weekends. Most of them are built around sports because that's what I know best. They fall into
-      three groups: reading motion from video, finding signal in baseball data, and answering questions
-      from documents.</p>
+    <p>These are a few of the projects I've built end to end, from the raw input to a working app, mostly
+      on evenings and weekends. Most of them are built around sports because that's what I know best. The
+      ones here fall into three groups: reading motion from video, finding signal in baseball data, and
+      answering questions from documents.</p>
   </div>
 
   <div id="tab-cv">
