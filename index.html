@@ -6,596 +6,294 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Grant Voytovich</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
 <style>
-  /* Clean, light editorial theme. One restrained accent (deep teal).
-     Archivo (display) + Inter (body) + IBM Plex Mono (figures). */
+  /* Process-map theme: blueprint canvas, mono for the diagrams, serif for the writing.
+     Amber = manual work (current state). Teal = automated work (future state). */
   :root{
-    color-scheme:light;
-    --bg:#f7f7f4; --surface:#ffffff; --inset:#f3f3ef;
-    --line:#e6e6e0; --line2:#d6d6ce;
-    --text:#1b1c1e; --muted:#656a70; --faint:#9a9ea5;
-    --accent:#0f766e; --accent-soft:#e7f1ef;
-    --good:#0f766e; --bad:#b4532f;
-    --radius:12px; --pc:var(--accent);
+    color-scheme:dark;
+    --bg:#0d1820; --panel:#132330; --panel2:#182c3b;
+    --line:#26404f; --grid:rgba(120,170,200,.055);
+    --text:#edf2f4; --body:#c6d2d9; --muted:#8ba0ae;
+    --auto:#4fd1b5; --manual:#f0a35e;
+    --mono:"DM Mono",ui-monospace,Consolas,monospace;
+    --serif:"Newsreader",Georgia,serif;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    line-height:1.65; -webkit-font-smoothing:antialiased;
-    padding-left:max(20px,env(safe-area-inset-left,0px));
-    padding-right:max(20px,env(safe-area-inset-right,0px));
-    padding-bottom:4rem;
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+  body{margin:0;color:var(--body);font-family:var(--serif);font-size:1.16rem;line-height:1.6;
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:32px 32px}
+  .wrap{max-width:940px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;color:var(--text);margin:0;line-height:1.15}
+  a{color:var(--auto)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--auto);outline-offset:2px}
+  .label{font-family:var(--mono);font-size:.74rem;color:var(--muted);letter-spacing:.02em}
+
+  /* swimlane navigation */
+  .lane{position:sticky;top:0;z-index:10;background:rgba(13,24,32,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .lane-in{max-width:940px;margin:0 auto;padding:14px 16px 10px;position:relative}
+  .stages{display:flex;justify-content:space-between;position:relative;list-style:none;margin:0;padding:0}
+  .track,.fill{position:absolute;left:22px;top:20px;height:2px;background:var(--line)}
+  .track{right:22px}
+  .fill{background:var(--auto);width:0;transition:width .15s linear}
+  .stages button{display:flex;flex-direction:column;align-items:flex-start;gap:7px;position:relative;font-family:var(--mono);font-size:.74rem;color:var(--muted);padding:0}
+  .stages li:last-child button{align-items:flex-end}
+  .stages li{position:relative}
+  .stages i{width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--line);display:block}
+  .stages .done i{border-color:var(--auto);background:var(--auto)}
+  .stages .on{color:var(--text)}
+
+  section.stage{padding-block:64px 18px}
+  .kicker{font-family:var(--mono);font-size:.8rem;color:var(--auto);margin-bottom:12px}
+  h1{font-size:clamp(2.5rem,7vw,4.2rem);letter-spacing:-.015em;max-width:15ch}
+  h2{font-size:clamp(1.8rem,4.5vw,2.5rem)}
+  .prose{max-width:62ch}
+  .prose p{margin:14px 0}
+  .lead{font-size:1.32rem;color:var(--text);max-width:50ch;margin-top:20px}
+  .prose b{color:var(--text);font-weight:600}
+
+  /* agent card */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:22px;margin-top:22px}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .card h3{font-size:1.5rem}
+  .tag{color:var(--muted);font-size:1.02rem;margin-top:3px}
+  .switch{display:inline-flex;border:1px solid var(--line);border-radius:5px;overflow:hidden;font-family:var(--mono);font-size:.76rem;flex:none}
+  .switch button{padding:8px 12px;color:var(--muted)}
+  .switch button[aria-pressed="true"][data-state="cur"]{background:var(--manual);color:#201204}
+  .switch button[aria-pressed="true"][data-state="fut"]{background:var(--auto);color:#04201a}
+
+  /* flow */
+  .flow{list-style:none;margin:22px 0 0;padding:0;display:flex;gap:26px}
+  .flow li{flex:1 1 0;min-width:0;position:relative;animation:rise .28s ease both;animation-delay:calc(var(--i)*55ms)}
+  .flow li:not(:last-child)::after{content:"";position:absolute;left:100%;top:50%;width:26px;height:2px;background:var(--c)}
+  .flow li:not(:last-child)::before{content:"";position:absolute;left:calc(100% + 18px);top:calc(50% - 4px);border-left:8px solid var(--c);border-block:5px solid transparent;z-index:1}
+  .flow{--c:var(--auto)} .flow.cur{--c:var(--manual)}
+  .node{height:100%;padding:12px;border:1px solid var(--c);border-radius:5px;background:var(--panel2)}
+  .flow.cur .node{border-style:dashed}
+  .node.ai{background:rgba(79,209,181,.14)}
+  .node small{display:block;font-family:var(--mono);color:var(--muted);font-size:.68rem;margin-bottom:6px}
+  .node.ai small{color:var(--auto)}
+  .node b{display:block;font-family:var(--mono);font-weight:500;font-size:.82rem;line-height:1.35;color:var(--text)}
+  .node p{margin:7px 0 0;font-size:1rem;line-height:1.35}
+  .summary{margin:18px 0 0;font-size:1.2rem;color:var(--text)}
+  .proof{margin:22px 0 0;padding:16px 18px;border-left:3px solid var(--auto);background:var(--panel);color:var(--text);font-size:1.25rem;max-width:62ch}
+  .phase{display:flex;gap:26px;margin-top:24px;font-family:var(--mono);font-size:.74rem}
+  .phase span{flex:1 1 0;padding-bottom:6px;border-bottom:2px solid var(--line);color:var(--muted)}
+  .phase span+span{border-color:var(--auto);color:var(--auto)}
+  #method{margin-top:12px}
+  #method .hard .node{background:rgba(79,209,181,.14)}
+  @keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flow li{animation:none}}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+  .meta dt{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+  .meta dd{margin:2px 0 0}
+
+  /* projects */
+  .picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .picker button{font-family:var(--mono);font-size:.8rem;padding:8px 12px;border:1px solid var(--line);border-radius:5px;color:var(--body);background:var(--panel)}
+  .picker button[aria-pressed="true"]{background:var(--auto);border-color:var(--auto);color:#04201a}
+  video{display:block;width:100%;border-radius:5px;margin-top:18px;background:#000}
+  .cap{font-size:.98rem;color:var(--muted);margin:7px 0 0}
+  .readout{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px;border-radius:5px;overflow:hidden}
+  .ro{background:var(--panel2);padding:11px 12px;min-width:0}
+  .ro .v{font-family:var(--mono);font-size:1.12rem;color:var(--text)}
+  .ro .v small{font-size:.66rem;color:var(--muted)}
+  .ro .v.accent,.ro .v.good{color:var(--auto)} .ro .v.bad{color:var(--manual)}
+  .ro .l{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:3px}
+  .ro .sub{font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+  .chart{margin-top:18px}
+  .chart h4{font-family:var(--mono);font-weight:500;font-size:.82rem;color:var(--text);margin:0}
+  .chart .cap{margin:2px 0 8px}
+  .chart svg{display:block;width:100%;height:auto}
+  .legend{display:flex;gap:14px;font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:6px}
+  .legend i{display:inline-block;width:12px;height:3px;margin-right:5px;vertical-align:middle}
+  .how{font-size:1.04rem;margin:16px 0 0}
+  .how b{color:var(--text);font-weight:600}
+  .code{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:.8rem}
+  .predgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+  .tbl-h{font-family:var(--mono);font-size:.76rem;margin-bottom:4px}
+  .tbl-h.bounce{color:var(--auto)} .tbl-h.regress{color:var(--manual)}
+  table.pred{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.72rem}
+  table.pred th{text-align:left;color:var(--muted);font-weight:400;padding:4px 3px;border-bottom:1px solid var(--line)}
+  table.pred td{padding:4px 3px;border-bottom:1px solid rgba(38,64,79,.6)}
+  table.pred .num{text-align:right}
+  table.pred .mut{color:var(--muted)} table.pred .proj{color:var(--text)}
+  h4.sub{font-family:var(--mono);font-weight:500;font-size:.84rem;color:var(--text);margin:24px 0 0}
+  .qa{background:rgba(0,0,0,.18);border-radius:5px;padding:14px;margin-top:18px}
+  .q{color:var(--text);font-weight:600}
+  .qcite{font-family:var(--mono);font-size:.68rem;color:var(--auto)}
+  .src{font-size:.98rem;border-left:2px solid var(--line);padding-left:10px;margin-top:9px;color:var(--muted)}
+
+  footer{margin-top:44px;padding-block:32px 54px;border-top:1px solid var(--line)}
+  footer .fine{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:18px}
+
+  @media(max-width:680px){
+    body{font-size:1.08rem}
+    .stages button span{max-width:72px;font-size:.66rem;line-height:1.2}
+    .flow{flex-direction:column;gap:20px}
+    .flow li:not(:last-child)::after{left:50%;top:100%;width:2px;height:20px}
+    .flow li:not(:last-child)::before{left:calc(50% - 4px);top:calc(100% + 12px);border-top:8px solid var(--c);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:0}
+    .phase{display:none}
+    .card{padding:16px}
+    .readout{grid-template-columns:repeat(2,1fr)}
+    .meta,.predgrid{grid-template-columns:1fr}
   }
-  .wrap{max-width:760px;margin:0 auto}
-  h1,h2,h3{font-family:"Archivo",system-ui,sans-serif;letter-spacing:-.015em;margin:0;color:var(--text)}
-  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
-  a{color:var(--accent)}
-  .eyebrow{font-family:"Archivo",sans-serif;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-
-  /* header */
-  .top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:32px 0 4px}
-  .top .name{font-family:"Archivo",sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.01em}
-  .top .role{color:var(--muted);font-size:.9rem}
-
-  /* about */
-  .about{padding-block:30px 10px}
-  .about p{color:#34373c;font-size:1.07rem;line-height:1.8;max-width:64ch;margin:0 0 18px}
-  .about p b{color:var(--text);font-weight:600}
-  .contact{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px;font-size:.95rem}
-  .contact a{color:var(--accent);text-decoration:none;font-weight:600}
-  .contact a:hover{text-decoration:underline}
-  .contact span{color:var(--faint)}
-
-  /* tab bar */
-  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:22px;overflow-x:auto;scrollbar-width:none}
-  .tabs::-webkit-scrollbar{display:none}
-  .tabs button{appearance:none;background:none;border:0;cursor:pointer;font-family:"Archivo",sans-serif;
-    font-weight:700;font-size:.92rem;color:var(--muted);padding:11px 13px;border-bottom:2px solid transparent;
-    margin-bottom:-1px;white-space:nowrap;flex:0 0 auto}
-  .tabs button:hover{color:var(--text)}
-  .tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
-
-  /* section intro (per tab) */
-  .pro-intro,.intro-block{padding-block:30px 6px}
-  .pro-intro .eyebrow,.intro-block .eyebrow{color:var(--accent)}
-  .pro-intro h2,.intro-block h2{font-size:1.6rem;font-weight:800;margin:10px 0 10px;letter-spacing:-.02em}
-  .pro-intro p,.intro-block p{color:#34373c;font-size:1.04rem;line-height:1.75;max-width:64ch;margin:0}
-  .pro-intro p b,.intro-block p b{color:var(--text);font-weight:600}
-  /* sub-section headers inside the Personal Projects tab */
-  .group-head{border-top:2px solid var(--line2);margin-top:28px;padding-top:30px}
-  .group-head h2,.an-head.group-head h2{font-size:1.3rem}
-
-  /* project / case study */
-  .project,.case{border-top:1px solid var(--line);padding-block:34px 14px}
-  .project:first-child{border-top:0}
-  .p-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:5px}
-  .p-num{display:none}
-  .project h2,.case h2{font-size:1.45rem;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
-  .p-kind{color:var(--accent);font-size:.78rem;font-weight:700;font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.05em}
-  .p-lede{color:#3a3d42;font-size:1.05rem;line-height:1.65;max-width:64ch;margin:5px 0 0}
-  .p-lede b{color:var(--text);font-weight:600}
-  .case .case-sub{color:var(--accent);font-size:.92rem;font-weight:700;font-family:"Archivo",sans-serif;margin-bottom:0}
-  .case p{color:#3a3d42;font-size:1.0rem;line-height:1.72;max-width:66ch;margin:14px 0 0}
-
-  /* spec table — the anchor at the top of every project */
-  .spec{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:18px 0 6px;background:var(--surface)}
-  .spec>div{display:grid;grid-template-columns:150px 1fr}
-  .spec>div+div{border-top:1px solid var(--line)}
-  .spec dt{padding:13px 16px;margin:0;background:var(--inset);border-right:1px solid var(--line);
-    font-family:"Archivo",sans-serif;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center}
-  .spec dd{padding:13px 16px;margin:0;color:var(--text);font-size:.95rem;line-height:1.55}
-  @media(max-width:520px){ .spec>div{grid-template-columns:1fr} .spec dt{border-right:0;border-bottom:1px solid var(--line)} }
-  .case .spec{margin-top:16px}
-
-  .demo-frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0c0f12;margin-top:22px}
-  .demo-frame video{display:block;width:100%;height:auto}
-  .demo-cap{color:var(--muted);font-size:.84rem;margin:9px 2px 18px;line-height:1.5}
-
-  .readout{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
-    border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px}
-  .ro{background:var(--surface);padding:13px 15px;min-width:0}
-  .ro .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.26rem;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--text)}
-  .ro .v small{font-family:"Inter",sans-serif;font-size:.62rem;color:var(--muted);font-weight:600}
-  .ro .v.accent{color:var(--accent)}
-  .ro .v.good{color:var(--good)} .ro .v.bad{color:var(--bad)}
-  .ro .l{font-size:.73rem;color:var(--muted);margin-top:4px}
-  .ro .sub{font-size:.68rem;color:var(--faint);margin-top:1px}
-  @media(max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)}
-    .ro:nth-child(1),.ro:nth-child(2){border-bottom:1px solid var(--line)} }
-
-  .chartcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px 8px;margin-bottom:16px}
-  .chartcard h3{font-size:.92rem;font-weight:700}
-  .chartcard .csub{color:var(--muted);font-size:.78rem;margin-bottom:8px;line-height:1.45}
-  .chartcard svg{width:100%;height:auto;display:block}
-  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:.78rem;color:var(--muted)}
-  .legend span{display:inline-flex;align-items:center;gap:6px}
-  .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
-
-  .how{color:#44474c;font-size:.92rem;line-height:1.65;margin:0 0 16px}
-  .how b{color:var(--text)}
-  .p-links{display:flex;flex-wrap:wrap;gap:10px}
-  .btn{display:inline-flex;align-items:center;gap:7px;font-family:"Archivo",sans-serif;font-weight:700;
-    font-size:.85rem;border-radius:9px;padding:9px 15px;text-decoration:none;cursor:pointer}
-  .btn.code{background:var(--accent);color:#fff}
-  .btn.soon{border:1px solid var(--line2);color:var(--faint);cursor:default}
-  .btn svg{width:15px;height:15px}
-
-  /* closing */
-  .roadmap{border-top:1px solid var(--line);padding-block:30px 8px}
-  .roadmap .eyebrow{color:var(--accent)}
-  .roadmap h2{font-size:1.35rem;font-weight:800;margin:10px 0 6px}
-  .roadmap p{color:#3a3d42;margin:0 0 14px;max-width:64ch;line-height:1.7}
-
-  /* analytics */
-  .mlb{--pc:var(--accent)}
-  .an-head{padding-block:28px 6px}
-  .an-head .eyebrow{color:var(--accent)}
-  .an-head h2{font-size:1.5rem;font-weight:800;margin:10px 0 8px}
-  .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
-  .panel>h3{font-size:1rem;font-weight:700;margin-bottom:12px}
-  .predgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  @media(max-width:560px){ .predgrid{grid-template-columns:1fr} }
-  .tbl-h{font-family:"Archivo",sans-serif;font-weight:700;font-size:.82rem;padding:0 2px 6px;margin-bottom:4px;border-bottom:2px solid var(--line)}
-  .tbl-h.bounce{color:var(--good);border-bottom-color:var(--good)}
-  .tbl-h.regress{color:var(--bad);border-bottom-color:var(--bad)}
-  table.pred{width:100%;border-collapse:collapse;font-size:.82rem}
-  table.pred th{font-family:"Archivo",sans-serif;text-align:left;color:var(--muted);font-weight:600;
-    font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;padding:5px 5px;border-bottom:1px solid var(--line)}
-  table.pred td{padding:6px 5px;border-bottom:1px solid var(--line);color:var(--text)}
-  table.pred td.num,table.pred th.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
-  table.pred td.mut{color:var(--muted)}
-  table.pred td.proj{color:var(--accent);font-weight:700}
-  .explain{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;
-    padding:14px 16px;color:#44474c;font-size:.9rem;line-height:1.6;background:var(--inset);margin-top:16px}
-  .explain .k{font-family:"Archivo",sans-serif;font-weight:700;color:var(--accent);text-transform:uppercase;
-    letter-spacing:.05em;font-size:.72rem;flex:0 0 auto;padding-top:2px}
-  .explain b{color:var(--text)}
-
-  /* generative AI / RAG */
-  .ragflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--text)}
-  .ragflow span{border:1px solid var(--line2);border-radius:7px;padding:5px 10px;background:var(--surface)}
-  .ragflow i{color:var(--faint);font-style:normal}
-  .qa-q{font-weight:600;color:var(--text);margin-bottom:10px}
-  .qa-q::before{content:"Q  ";color:var(--accent);font-family:"IBM Plex Mono",monospace;font-weight:700}
-  .qa-a{color:#2a2c2f;line-height:1.7;margin-bottom:12px}
-  .qa-a b{color:var(--text)}
-  .qcite{font-family:"IBM Plex Mono",monospace;font-size:.66rem;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 5px;margin:0 1px;vertical-align:.1em}
-  .qa-src{background:var(--inset);border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-bottom:7px;font-size:.84rem;color:#44474c;line-height:1.5}
-  .qa-src .sl{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--muted);margin-bottom:3px}
-  .qa-src .sl b{color:var(--accent)}
-
-  footer{border-top:1px solid var(--line);padding-top:18px;margin-top:26px;color:var(--faint);font-size:.8rem;line-height:1.6}
-  footer .mono{color:var(--muted)}
 </style>
 </head>
 <body>
 
 
-<div class="wrap">
-
-  <header class="top">
-    <div class="name">Grant Voytovich</div>
-    <div class="role">Management consultant · AI agents &amp; automation</div>
-  </header>
-
-  <div class="tabs" role="tablist" aria-label="Portfolio sections">
-    <button role="tab" id="t-about" aria-selected="true" aria-controls="tab-about">About</button>
-    <button role="tab" id="t-pro" aria-selected="false" aria-controls="tab-pro">Professional Work</button>
-    <button role="tab" id="t-projects" aria-selected="false" aria-controls="tab-projects">Personal Projects</button>
+<nav class="lane" aria-label="Sections">
+  <div class="lane-in">
+    <div class="track"></div><div class="fill" id="fill"></div>
+    <ol class="stages" id="stages">
+      <li><button data-go="start"><i></i><span>Start</span></button></li>
+      <li><button data-go="carpedia"><i></i><span>Carpedia</span></button></li>
+      <li><button data-go="thread"><i></i><span>Thread Bank</span></button></li>
+      <li><button data-go="projects"><i></i><span>Personal Projects</span></button></li>
+      <li><button data-go="contact"><i></i><span>Contact</span></button></li>
+    </ol>
   </div>
+</nav>
 
-  <!-- ===================== TAB 1: COMPUTER VISION ===================== -->
-  <!-- TAB: ABOUT -->
-  <div id="tab-about">
-  <section class="about">
-    <p>Hi! I'm Grant Voytovich, and welcome to my portfolio. This site is a quick look at who I am, the
-      AI agents I've built at work, and the projects I tinker with on my own time. Thanks for stopping by.</p>
-    <p>I'm a <b>management consultant at Carpedia International</b>. The work is hands-on and on-site: I
-      spend my time inside clients' operations, mapping how a process actually runs, finding where it
-      breaks down, and leading the change with the people who do the work every day. It has taught me
-      that the hard part of improving a process is rarely the idea. It's getting a team to adopt it.</p>
-    <p>Before consulting I was an analyst on a <b>fintech's Banking-as-a-Service team</b>, where I built
-      a range of internal AI agents that took real work off the team's plate, from reviewing contracts to
-      reporting partner status to tracking daily action items. Together they cut more than ten hours of
-      manual work a week. The part I enjoyed most was fitting them into people's actual workflow so they
-      stuck, and that's the kind of work I want to keep doing.</p>
-    <p>On my own time I build projects end to end. The ones here cover computer vision, predictive
-      modeling, and retrieval-augmented generation, and most are built around sports, which comes from my
-      baseball background. I played Division I baseball and, after graduating, ran the analytics
-      department for that program. I also did a data-quality fellowship with the <b>Minnesota Twins</b>.
-      That's where I learned to trust data.</p>
-    <p>Outside of work I'm usually staying active, reading, traveling, trying new food, or spending time
-      with family and friends.</p>
-    <div class="contact">
-      <a href="mailto:grantvoytovich@gmail.com">grantvoytovich@gmail.com</a><span>·</span><a href="https://www.linkedin.com/in/grant-voytovich/" target="_blank" rel="noopener">linkedin.com/in/grant-voytovich</a>
-    </div>
-  </section>
-  </div><!-- /tab-about -->
-
-  <!-- TAB: PROFESSIONAL WORK -->
-  <div id="tab-pro" hidden>
-  <div class="pro-intro">
-    <div class="eyebrow">Professional work · Thread Bank</div>
-    <h2>AI agents I built in BaaS operations</h2>
-    <p>As an analyst on the Banking-as-a-Service team, I kept running into the same problem. The
-      information people needed was sitting in inboxes and long documents, and someone had to dig it out
-      by hand, over and over. So I built a number of internal AI agents to do that digging for them.
-      Together they saved the team more than ten hours a week. The three below are examples. They stay
-      high level, with partner names and specific numbers left out.</p>
-  </div>
-
-  <section class="case">
-    <h2>Legal Agreement Review Agent</h2>
-    <p class="case-sub">A live view of every partner contract, for the leadership team.</p>
-    <dl class="spec">
-      <div><dt>The problem</dt><dd>We had legal agreements with a lot of partners, and each one buried the important details inside a long PDF: when it expired, what each side had agreed to do, and what fees were owed in each direction. Answering a simple question meant someone opening the document and reading through it.</dd></div>
-      <div><dt>What it does</dt><dd>It reads each agreement, identifies the key terms (expiration and renewal dates, fee schedules, and the obligations on both sides), and writes them into a structured record. Those records feed an app hosted on AWS that shows every contract side by side and stays current as agreements are added or amended.</dd></div>
-      <div><dt>Who uses it</dt><dd>The executive team. Instead of digging through PDFs, leadership opens the app, finds the partner, and sees the dates, fees, and obligations laid out in one place.</dd></div>
-      <div><dt>What changed</dt><dd>A question that used to mean reading a contract now takes a few seconds, and nothing slips by on a renewal or a fee.</dd></div>
-    </dl>
+<main class="wrap">
+  <section class="stage" id="start">
+    <div class="kicker">Management consultant · AI agents &amp; automation</div>
+    <h1>Hi! I'm Grant Voytovich.</h1>
+    <p class="lead">Welcome to my portfolio. I am a management consultant who loves mapping out how work gets done and building AI agents to automate the manual parts of it. I have built a number of agents for my teams at Carpedia and Thread Bank, and I also build AI projects on my own. I laid this page out like a process map, so you can scroll through it in order or use the links at the top to jump around.</p>
   </section>
 
-  <section class="case">
-    <h2>Partner Status Newsletter</h2>
-    <p class="case-sub">A recurring status update sent to each partner.</p>
-    <dl class="spec">
-      <div><dt>The problem</dt><dd>Our work with each partner moved through a lot of email. Status updates, open items, and requests were spread across threads, so it was hard for anyone, on our side or theirs, to see where an initiative stood or what was still outstanding.</dd></div>
-      <div><dt>What it does</dt><dd>Every two weeks it gathers the latest status on each partner's initiatives from our internal tracking sources, writes a plain-language summary for that partner, and sends it. Each digest covers where our joint initiatives stand, what we still need from the partner, and what they're waiting on from us.</dd></div>
-      <div><dt>Who uses it</dt><dd>Our fintech partners, and the internal team that manages them. Partners get a consistent update on a schedule they can count on, and our team stops rebuilding the same status email by hand.</dd></div>
-      <div><dt>What changed</dt><dd>Status that used to live in scattered email threads became one clear picture, with the items owed on both sides spelled out.</dd></div>
-    </dl>
+  <section class="stage" id="carpedia">
+    <div class="kicker">What I'm doing now</div>
+    <h2>Management Consulting at Carpedia</h2>
+    <div class="prose">
+      <p>I am a <b>management consultant at Carpedia International</b>, where we do a lot of hands-on, on-site work with our clients. We spend much of our time finding outdated, manual processes and working with the people who run them to put something better in place.</p>
+      <p>I have found that identifying a manual process is usually much easier than getting people to change how they work. People have often done things the same way for a long time, so I spend a lot of my time applying change management principles to help them adopt a new way of thinking.</p>
+    </div>
+    <div class="phase" aria-hidden="true"><span>Finding the problem</span><span>Getting people to change (the tougher part)</span></div>
+    <ol class="flow" id="method">
+      <li style="--i:0"><div class="node"><small>Step 1</small><b>Map the current process</b><p>I work on site with the people doing the job to understand how it runs today.</p></div></li>
+      <li style="--i:1"><div class="node"><small>Step 2</small><b>Identify the opportunity</b><p>I look for outdated or manual steps that are taking up people's time.</p></div></li>
+      <li class="hard" style="--i:2"><div class="node"><small>Step 3</small><b>Engage the team</b><p>I use change management and stakeholder engagement to get people on board.</p></div></li>
+      <li class="hard" style="--i:3"><div class="node"><small>Step 4</small><b>Support the change</b><p>I work with the team as they adopt the new process so that it lasts.</p></div></li>
+    </ol>
   </section>
 
-  <section class="case">
-    <h2>Daily Action-Item Agent</h2>
-    <p class="case-sub">A personalized daily to-do list for the team.</p>
-    <dl class="spec">
-      <div><dt>The problem</dt><dd>Our to-dos were scattered across email, our project management software, and our internal chat tools. Everyone had to read through all of it and keep their own running list, which was easy to fall behind on.</dd></div>
-      <div><dt>What it does</dt><dd>Each morning it scans the previous day's new email, project updates, and chat messages, picks out anything that needs action, works out who it belongs to, and sends each person a short message listing their own items.</dd></div>
-      <div><dt>Who uses it</dt><dd>My team. Instead of piecing a to-do list together every morning, each teammate starts the day with one already built for them.</dd></div>
-      <div><dt>What changed</dt><dd>No more tracking to-dos by hand across three tools, and fewer things lost between them.</dd></div>
-    </dl>
-  </section>
-  </div><!-- /tab-pro -->
-
-  <!-- TAB: PERSONAL PROJECTS -->
-  <div id="tab-projects" hidden>
-  <div class="intro-block">
-    <div class="eyebrow">Personal projects</div>
-    <h2>Things I build on my own time</h2>
-    <p>These are a few of the projects I've built end to end, from the raw input to a working app, mostly
-      on evenings and weekends. Most of them are built around sports because that's what I know best. The
-      ones here fall into three groups: reading motion from video, finding signal in baseball data, and
-      answering questions from documents.</p>
-  </div>
-
-  <div id="tab-cv">
-  <div class="intro-block group-head">
-    <div class="eyebrow">Computer vision</div>
-    <h2>Reading motion from video</h2>
-    <p>Four tools that turn ordinary video into measurements: a horse's gait and pace, a lifter's form, a
-      pitcher's mechanics, a swing. Each one started because someone I know wanted to understand movement
-      they cared about, whether that was a friend's horses or their own form.</p>
-  </div>
-
-  <!-- PROJECT 1 — HORSE -->
-  <section class="project" style="--pc:var(--horse)">
-    <div class="p-head"><span class="p-num">01</span><h2>Horse Motion Analyzer</h2>
-      <span class="p-kind">Detection &amp; tracking</span></div>
-    <p class="p-lede">Reads a horse's <b>relative speed, gait, and stride cadence</b> straight from
-      video. There's no calibration step: instead of needing to know real distances in the frame, it
-      measures how far the horse moves in units of its own body length.</p>
-    <dl class="spec">
-      <div><dt>Built for</dt><dd>A family friend who owns standardbred horses and wanted to use AI to understand them</dd></div>
-      <div><dt>How it's used</dt><dd>Upload a race or training clip and read the horse's gait, pace, and stride cadence, with no calibration or special gear</dd></div>
-      <div><dt>What changed</dt><dd>Readings that used to take a trained eye or timing equipment now come straight from a phone video</dd></div>
-    </dl>
-    <div class="demo-frame">
-      <video src="horse_demo.mp4" poster="horse_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+  <section class="stage" id="thread">
+    <div class="kicker">Previous work</div>
+    <h2>Building with AI at Thread Bank</h2>
+    <div class="prose">
+      <p>I worked as an analyst on the Banking-as-a-Service team, where a lot of our time went to pulling information out of inboxes and long documents by hand. I started building AI agents to automate that work. I built quite a few while I was there, and the three below are just examples. I have kept them high-level and left out any partner names or figures.</p>
+      <p>Each map walks through the process step by step. You can use the switch to compare how we did the work by hand with how it works with AI in the loop.</p>
     </div>
-    <div class="demo-cap">Live output on a standardbred race clip. The analyzer locks onto the most prominent horse and reads its gait and pace.</div>
-    <div class="readout">
-      <div class="ro"><div class="v accent">Trot</div><div class="l">Detected gait</div></div>
-      <div class="ro"><div class="v">1.22 <small>BL/s</small></div><div class="l">Peak speed</div></div>
-      <div class="ro"><div class="v">29 <small>/min</small></div><div class="l">Cadence</div></div>
-      <div class="ro"><div class="v">362</div><div class="l">Frames tracked</div></div>
-    </div>
-    <div class="chartcard">
-      <h3>Speed over time</h3>
-      <div class="csub">Body lengths per second, across the clip</div>
-      <svg id="chartHorse" viewBox="0 0 680 170" preserveAspectRatio="none" role="img" aria-label="Horse speed over the clip, peaking near 1.7 body lengths per second"></svg>
-    </div>
-    <p class="how"><b>How:</b> YOLOv8 finds the horse in every frame, ByteTrack keeps following the same
-      horse from one frame to the next, and dividing how far it moves by its body length gives a speed
-      that doesn't depend on how far away the camera is. Stride cadence comes from the rhythm of the
-      horse's up-and-down motion.</p>
-    <div class="p-links">
-      <a class="btn code" href="https://github.com/GrantVoytovich/horse-speed-analyzer" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-      <span class="btn soon">Live demo · coming soon</span>
-    </div>
+    <div id="agents"></div>
   </section>
 
-  <!-- PROJECT 2 — FORM CHECK -->
-  <section class="project" style="--pc:var(--form)">
-    <div class="p-head"><span class="p-num">02</span><h2>Form Check</h2>
-      <span class="p-kind">Pose estimation</span></div>
-    <p class="p-lede">Fits a <b>skeleton</b> to a lifter and grades the movement: <b>reps,
-      squat depth, tempo, and left/right symmetry</b>, with coaching cues.</p>
-    <dl class="spec">
-      <div><dt>Built for</dt><dd>Myself and family members who wanted to check their lifting form</dd></div>
-      <div><dt>How it's used</dt><dd>Record a squat set and get reps, depth, tempo, and left/right symmetry with coaching cues</dd></div>
-      <div><dt>What changed</dt><dd>Form feedback that usually needs a coach in the room comes from one phone video</dd></div>
-    </dl>
-    <div class="demo-frame">
-      <video src="squat_demo.mp4" poster="squat_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+  <section class="stage" id="projects">
+    <div class="kicker">What I build on my own time</div>
+    <h2>Personal Projects</h2>
+    <div class="prose">
+      <p>I have built a number of projects on my own, and these are a few examples. Many of them are related to sports because of my background. I played Division I baseball at Bucknell, ran the program's analytics department after I graduated, and completed a baseball data fellowship with the Minnesota Twins.</p>
+      <p>Select a project below to see how it works and what it produces.</p>
     </div>
-    <div class="demo-cap">Live output on a squat clip. The skeleton drives every metric, and the HUD shows the running rep count and knee angle.</div>
-    <div class="readout">
-      <div class="ro"><div class="v accent">Deep</div><div class="l">Squat depth</div></div>
-      <div class="ro"><div class="v">52 <small>° knee</small></div><div class="l">Best depth</div></div>
-      <div class="ro"><div class="v">88 <small>%</small></div><div class="l">Symmetry</div></div>
-      <div class="ro"><div class="v">2</div><div class="l">Reps</div></div>
-    </div>
-    <div class="chartcard">
-      <h3>Knee angle through the set</h3>
-      <div class="csub">Degrees over time. Each dip is a rep, and the deepest point is marked</div>
-      <svg id="chartForm" viewBox="0 0 680 180" preserveAspectRatio="none" role="img" aria-label="Knee angle across the squat set, bottoming near 52 degrees"></svg>
-    </div>
-    <p class="how"><b>How:</b> A YOLOv8-pose model places 17 body keypoints in each frame. The knee
-      angle comes from the positions of the hip, knee, and ankle, and reps, depth, and symmetry are all
-      read off that knee-angle signal, with thresholds that adapt to each person's range of motion.</p>
-    <div class="p-links">
-      <a class="btn code" href="https://github.com/GrantVoytovich/form-check" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-      <span class="btn soon">Live demo · coming soon</span>
-    </div>
-  </section>
+    <div class="picker" id="picker"></div>
 
-  <!-- PROJECT 3 — PITCH -->
-  <section class="project" style="--pc:var(--ball)">
-    <div class="p-head"><span class="p-num">03</span><h2>Pitch Analyzer</h2>
-      <span class="p-kind">Biomechanics</span></div>
-    <p class="p-lede">Breaks down a pitching delivery from a single camera: <b>arm speed,
-      hip-shoulder separation, and the kinematic sequence</b>, meaning whether the pelvis, torso,
-      and arm fire in the right order.</p>
-    <dl class="spec">
-      <div><dt>Built for</dt><dd>Myself and family members interested in their throwing mechanics</dd></div>
-      <div><dt>How it's used</dt><dd>Record a delivery from a single camera to read arm speed, hip-shoulder separation, and whether the body fires in sequence</dd></div>
-      <div><dt>What changed</dt><dd>Mechanics you'd normally need a lab or a pitching coach to see are readable from a normal video</dd></div>
-    </dl>
-    <div class="demo-frame">
-      <video src="pitch_demo.mp4" poster="pitch_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
-    </div>
-    <div class="demo-cap">Live output on a delivery. The throwing arm is highlighted, and the HUD tracks arm speed and separation and marks release.</div>
-    <div class="readout">
-      <div class="ro"><div class="v accent">In order</div><div class="l">Kinematic sequence</div></div>
-      <div class="ro"><div class="v">14.4 <small>bl/s</small></div><div class="l">Peak arm speed</div></div>
-      <div class="ro"><div class="v">52 <small>°</small></div><div class="l">Max separation</div></div>
-      <div class="ro"><div class="v">3.0 <small>s</small></div><div class="l">Release</div></div>
-    </div>
-    <div class="chartcard">
-      <h3>Kinematic sequence</h3>
-      <div class="csub">Rotational speed (normalized) through the delivery. A clean throw peaks pelvis → torso → arm, left to right</div>
-      <svg id="chartPitch" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Normalized rotational speed of pelvis, torso and arm, peaking in order"></svg>
-      <div class="legend">
-        <span><i style="background:#8e99a6"></i>Pelvis</span>
-        <span><i style="background:#687585"></i>Torso</span>
-        <span><i style="background:#0f766e"></i>Arm</span>
-      </div>
-    </div>
-    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints and works out which arm is throwing. Arm
-      speed is how fast the wrist moves, separation is the angle between the line of the hips and the
-      line of the shoulders, and the sequence compares <b>when</b> each body segment reaches its fastest
-      rotation. Because it works from one camera in 2-D, the rotation numbers are estimates rather than
-      exact measurements.</p>
-    <div class="p-links">
-      <a class="btn code" href="https://github.com/GrantVoytovich/pitch-analyzer" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-      <span class="btn soon">Live demo · coming soon</span>
-    </div>
-  </section>
+    <article class="card" data-project="horse">
+      <h3>Horse Motion Analyzer</h3>
+      <p class="tag">Reads a horse's speed, gait, and stride cadence from video, with no calibration.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>A family friend who owns standardbred horses and wanted to see what AI could do for them</dd></div><div><dt>How it's used</dt><dd>Upload a race or training clip and read the results</dd></div></dl>
+      <div data-flow="horse"></div>
+      <video src="horse_demo.mp4" poster="horse_poster.jpg" muted loop playsinline controls preload="none"></video>
+      <p class="cap">Real output on a standardbred race clip.</p>
+      <div class="readout"><div class="ro"><div class="v accent">Trot</div><div class="l">Detected gait</div></div><div class="ro"><div class="v">1.22 <small>BL/s</small></div><div class="l">Peak speed</div></div><div class="ro"><div class="v">29 <small>/min</small></div><div class="l">Cadence</div></div><div class="ro"><div class="v">362</div><div class="l">Frames tracked</div></div></div>
+      <div class="chart"><h4>Speed over time</h4><p class="cap">Body lengths per second, across the clip</p><svg id="chartHorse" viewBox="0 0 680 170" preserveAspectRatio="none" role="img" aria-label="Horse speed over the clip"></svg></div>
+      <a class="code" href="https://github.com/GrantVoytovich/horse-speed-analyzer" target="_blank" rel="noopener">View code →</a>
+    </article>
 
-  <!-- PROJECT 4 — SWING -->
-  <section class="project" style="--pc:var(--swing)">
-    <div class="p-head"><span class="p-num">04</span><h2>Swing Analyzer</h2>
-      <span class="p-kind">Biomechanics · baseball &amp; golf</span></div>
-    <p class="p-lede">One tool for a bat or a club: <b>hand speed, hip-shoulder separation, and
-      the kinematic sequence</b> over the downswing. A baseball swing and a golf swing are really
-      the same rotational engine.</p>
-    <dl class="spec">
-      <div><dt>Built for</dt><dd>Myself and family members analyzing their baseball or golf swing</dd></div>
-      <div><dt>How it's used</dt><dd>Record a swing and get hand speed, separation, and the downswing sequence, for either a bat or a club</dd></div>
-      <div><dt>What changed</dt><dd>One tool covers both sports, turning a phone clip into swing feedback</dd></div>
-    </dl>
-    <div class="demo-frame">
-      <video src="swing_demo.mp4" poster="swing_poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
-    </div>
-    <div class="demo-cap">Live output on a golf driver swing. The arms are highlighted, and the HUD tracks hand speed and separation and marks impact.</div>
-    <div class="readout">
-      <div class="ro"><div class="v accent">In order</div><div class="l">Kinematic sequence</div></div>
-      <div class="ro"><div class="v">16.5 <small>bl/s</small></div><div class="l">Peak hand speed</div></div>
-      <div class="ro"><div class="v">55 <small>°</small></div><div class="l">Max separation</div></div>
-      <div class="ro"><div class="v">8.5 <small>s</small></div><div class="l">Impact</div></div>
-    </div>
-    <div class="chartcard">
-      <h3>Kinematic sequence</h3>
-      <div class="csub">Rotational speed (normalized) over the downswing. Pelvis → torso → hands, peaking left to right into impact</div>
-      <svg id="chartSwing" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Normalized rotational speed of pelvis, torso and hands over the downswing"></svg>
-      <div class="legend">
-        <span><i style="background:#8e99a6"></i>Pelvis</span>
-        <span><i style="background:#687585"></i>Torso</span>
-        <span><i style="background:#0f766e"></i>Hands</span>
-      </div>
-    </div>
-    <p class="how"><b>How:</b> YOLOv8-pose tracks 17 keypoints, with the hands taken as the midpoint
-      between the wrists. The sequence is measured only over the downswing (from the top of the swing to
-      impact) so that rotation during the follow-through doesn't get mistaken for part of the swing.
-      Because it works from one camera in 2-D, the rotation numbers are estimates rather than exact
-      measurements.</p>
-    <div class="p-links">
-      <a class="btn code" href="https://github.com/GrantVoytovich/swing-analyzer" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-      <span class="btn soon">Live demo · coming soon</span>
-    </div>
-  </section>
+    <article class="card" data-project="form" hidden>
+      <h3>Form Check</h3>
+      <p class="tag">Fits a skeleton to a lifter and grades reps, squat depth, tempo, and left/right symmetry.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>Me and family members who wanted to check our lifting form</dd></div><div><dt>How it's used</dt><dd>Record a squat set and get the numbers plus coaching cues</dd></div></dl>
+      <div data-flow="form"></div>
+      <video src="squat_demo.mp4" poster="squat_poster.jpg" muted loop playsinline controls preload="none"></video>
+      <p class="cap">Real output on a squat clip, with the running rep count and knee angle.</p>
+      <div class="readout"><div class="ro"><div class="v accent">Deep</div><div class="l">Squat depth</div></div><div class="ro"><div class="v">52 <small>° knee</small></div><div class="l">Best depth</div></div><div class="ro"><div class="v">88 <small>%</small></div><div class="l">Symmetry</div></div><div class="ro"><div class="v">2</div><div class="l">Reps</div></div></div>
+      <div class="chart"><h4>Knee angle through the set</h4><p class="cap">Each dip is a rep, and the deepest point is marked</p><svg id="chartForm" viewBox="0 0 680 180" preserveAspectRatio="none" role="img" aria-label="Knee angle across the squat set"></svg></div>
+      <a class="code" href="https://github.com/GrantVoytovich/form-check" target="_blank" rel="noopener">View code →</a>
+    </article>
 
-  </div><!-- /tab-cv -->
+    <article class="card" data-project="pitch" hidden>
+      <h3>Pitch Analyzer</h3>
+      <p class="tag">Breaks down a pitching delivery from one camera, including whether the body fires in the right order.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>Me and family members interested in our throwing mechanics</dd></div><div><dt>How it's used</dt><dd>Record a delivery and read arm speed, hip-shoulder separation, and sequence</dd></div></dl>
+      <div data-flow="pitch"></div>
+      <video src="pitch_demo.mp4" poster="pitch_poster.jpg" muted loop playsinline controls preload="none"></video>
+      <p class="cap">Real output on a delivery, with the throwing arm highlighted and release marked.</p>
+      <div class="readout"><div class="ro"><div class="v accent">In order</div><div class="l">Sequence</div></div><div class="ro"><div class="v">14.4 <small>BL/s</small></div><div class="l">Peak arm speed</div></div><div class="ro"><div class="v">52 <small>°</small></div><div class="l">Max separation</div></div><div class="ro"><div class="v">3.0 <small>s</small></div><div class="l">Release</div></div></div>
+      <div class="chart"><h4>Kinematic sequence</h4><p class="cap">A clean throw peaks pelvis, then torso, then arm. Numbers are 2-D estimates.</p><svg id="chartPitch" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Rotational speed of pelvis, torso and arm"></svg><div class="legend"><span><i style="background:#8fa3b5"></i>Pelvis</span><span><i style="background:#5f7a94"></i>Torso</span><span><i style="background:#4fd1b5"></i>Arm</span></div></div>
+      <a class="code" href="https://github.com/GrantVoytovich/pitch-analyzer" target="_blank" rel="noopener">View code →</a>
+    </article>
 
-  <div id="tab-analytics" class="mlb">
+    <article class="card" data-project="swing" hidden>
+      <h3>Swing Analyzer</h3>
+      <p class="tag">Analyzes both baseball and golf swings, since the body rotates in a similar way in each.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>Me and family members working on our baseball or golf swings</dd></div><div><dt>How it's used</dt><dd>Record a swing and read hand speed, separation, and downswing sequence</dd></div></dl>
+      <div data-flow="swing"></div>
+      <video src="swing_demo.mp4" poster="swing_poster.jpg" muted loop playsinline controls preload="none"></video>
+      <p class="cap">Real output on a golf driver swing, with the arms highlighted and impact marked.</p>
+      <div class="readout"><div class="ro"><div class="v accent">In order</div><div class="l">Sequence</div></div><div class="ro"><div class="v">16.5 <small>BL/s</small></div><div class="l">Peak hand speed</div></div><div class="ro"><div class="v">55 <small>°</small></div><div class="l">Max separation</div></div><div class="ro"><div class="v">8.5 <small>s</small></div><div class="l">Impact</div></div></div>
+      <div class="chart"><h4>Kinematic sequence</h4><p class="cap">Pelvis, torso, and hands over the downswing. Numbers are 2-D estimates.</p><svg id="chartSwing" viewBox="0 0 680 200" preserveAspectRatio="none" role="img" aria-label="Rotational speed of pelvis, torso and hands"></svg><div class="legend"><span><i style="background:#8fa3b5"></i>Pelvis</span><span><i style="background:#5f7a94"></i>Torso</span><span><i style="background:#4fd1b5"></i>Hands</span></div></div>
+      <a class="code" href="https://github.com/GrantVoytovich/swing-analyzer" target="_blank" rel="noopener">View code →</a>
+    </article>
 
-    <div class="an-head group-head">
-      <div class="eyebrow">Predictive analytics · MLB</div>
-      <h2>2027 Bounce-Back &amp; Regression</h2>
-      <p class="p-lede">Which hitters and pitchers are set up to rebound or fall off next year? The idea
-        is simple. <b>Expected</b> stats (xERA, xwOBA) estimate what a player's results should have been
-        based on the quality of their contact, which strips out luck. When a player's <b>actual</b>
-        numbers (ERA, wOBA) drift far from those expected numbers, they tend to snap back the next
-        year. I tested that on six seasons (2021 to 2026), then used 2026 to project 2027.</p>
-      <dl class="spec">
-        <div><dt>Built for</dt><dd>A personal project that grew out of my baseball analytics background</dd></div>
-        <div><dt>How it's used</dt><dd>It ranks which 2026 hitters and pitchers are set up to bounce back or regress in 2027, using luck-adjusted expected stats</dd></div>
-        <div><dt>What changed</dt><dd>Public Statcast data becomes a focused, luck-adjusted watch list instead of raw season numbers</dd></div>
-      </dl>
-    </div>
-
-    <div class="panel">
-      <h3>Does the thesis hold? Pitchers <span style="color:var(--muted);font-weight:400">(578 season-pairs, ≥300 BF)</span></h3>
+    <article class="card" data-project="mlb" hidden>
+      <h3>2027 MLB Bounce-Back Model</h3>
+      <p class="tag">Identifies players whose 2026 results did not match their expected stats, since those players tend to bounce back or regress the following year.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>Myself, as an extension of my baseball analytics background</dd></div><div><dt>How it's used</dt><dd>A watch list of who is set up to rebound or fall off in 2027</dd></div></dl>
+      <div data-flow="mlb"></div>
+      <h4 class="sub">Does it hold up? Pitchers (578 season pairs)</h4>
       <div class="readout" id="pit-stats"></div>
-      <p class="how" style="margin:12px 0 4px"><b>Yes.</b> xERA predicts next year's ERA better than ERA
-        itself, and the gap between actual and expected predicts the next-year change (r = −0.49). Sort
-        2026 pitchers into groups by how lucky they were and the pattern holds in every group: the
-        luckier the pitcher, the more they fell off the next year.</p>
-      <div class="chartcard">
-        <h3>Next-year ERA change, by 2026 luck</h3>
-        <div class="csub">Pitchers in five buckets by their 2026 ERA−xERA gap. Lucky arms (ERA under xERA) got worse; unlucky arms bounced back.</div>
-        <svg id="chartBuckets" viewBox="0 0 680 220" role="img" aria-label="Next-year ERA change by 2026 luck bucket, monotonic"></svg>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Hitters <span style="color:var(--muted);font-weight:400">(994 season-pairs, ≥300 PA)</span></h3>
+      <div class="chart"><h4>Next-year ERA change, by 2026 luck</h4><p class="cap">Lucky pitchers tended to get worse, and unlucky pitchers tended to bounce back.</p><svg id="chartBuckets" viewBox="0 0 680 220" role="img" aria-label="Next-year ERA change by 2026 luck group"></svg></div>
+      <h4 class="sub">Hitters (994 season pairs)</h4>
       <div class="readout" id="bat-stats"></div>
-      <p class="how" style="margin-top:12px">Same direction, much weaker. Hitting is mostly skill, so a
-        hitter's wOBA is far more stable than a pitcher's ERA and there's less luck to wash out. The
-        bounce-back edge is real but small.</p>
-    </div>
+      <p class="how">The same pattern shows up for hitters, but it is much weaker because luck plays a smaller role in their results.</p>
+      <h4 class="sub">Pitchers: 2026 ERA to projected 2027</h4>
+      <div class="predgrid"><div><div class="tbl-h bounce">Bounce-back (unlucky in 2026)</div><div id="pit-bounce"></div></div><div><div class="tbl-h regress">Regression (lucky in 2026)</div><div id="pit-regress"></div></div></div>
+      <h4 class="sub">Hitters: 2026 wOBA to projected 2027</h4>
+      <div class="predgrid"><div><div class="tbl-h bounce">Bounce-back</div><div id="bat-bounce"></div></div><div><div class="tbl-h regress">Regression</div><div id="bat-regress"></div></div></div>
+      <p class="how">This is <b>one signal, not a full projection system</b>. It ignores age, injury, role, and ballpark, and the most extreme names often come from small samples.</p>
+      <a class="code" href="https://github.com/GrantVoytovich/mlb-regression" target="_blank" rel="noopener">View code →</a>
+    </article>
 
-    <div class="an-head" style="padding-block:6px 2px">
-      <div class="eyebrow">2027 projections</div>
-      <h2 style="font-size:1.3rem">The names</h2>
-    </div>
-    <p class="how" style="margin-top:-2px">Players are ranked by how big their 2026 gap between actual and
-      expected was. The projection comes from a simple model, fit on past seasons, that combines a
-      player's actual and expected numbers to predict the next year. BF (batters faced) and PA (plate
-      appearances) are shown so you can judge sample size.</p>
-
-    <h3 style="font-size:1.1rem;margin:14px 0 8px">Pitchers <span style="color:var(--muted);font-size:.8rem;font-weight:400">· 2026 ERA → projected 2027</span></h3>
-    <div class="predgrid">
-      <div><div class="tbl-h bounce">Bounce-back ↑ &nbsp;<span style="color:var(--muted);font-weight:400">unlucky in 2026</span></div><div id="pit-bounce"></div></div>
-      <div><div class="tbl-h regress">Regression ↓ &nbsp;<span style="color:var(--muted);font-weight:400">lucky in 2026</span></div><div id="pit-regress"></div></div>
-    </div>
-
-    <h3 style="font-size:1.1rem;margin:20px 0 8px">Hitters <span style="color:var(--muted);font-size:.8rem;font-weight:400">· 2026 wOBA → projected 2027</span></h3>
-    <div class="predgrid">
-      <div><div class="tbl-h bounce">Bounce-back ↑</div><div id="bat-bounce"></div></div>
-      <div><div class="tbl-h regress">Regression ↓</div><div id="bat-regress"></div></div>
-    </div>
-
-    <div class="explain">
-      <span class="k">Read&nbsp;it&nbsp;right</span>
-      <div>This is <b>one signal, not a full projection system</b>. It ignores age, injury, role and
-        ballpark, and the most extreme names often come from small samples. Expected stats have their own
-        error, and the approach works much better for pitchers (ERA has a lot of luck in it) than for
-        hitters. Think of it as a read on who got lucky or unlucky in 2026, something to weigh alongside
-        everything else rather than a firm prediction.</div>
-    </div>
-
-    <div class="p-links" style="margin-top:14px">
-      <a class="btn code" href="https://github.com/GrantVoytovich/mlb-regression" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-    </div>
-
-  </div><!-- /tab-analytics -->
-
-  <div id="tab-llm" class="llm">
-  <div class="intro-block group-head">
-    <div class="eyebrow">Generative AI</div>
-    <h2>Answers grounded in the document</h2>
-    <p>A retrieval-augmented generation app that answers questions from a PDF and cites its sources. I
-      built it to understand, hands on, how to keep a language model honest.</p>
-  </div>
-  <section class="project" style="--pc:var(--llm)">
-    <div class="p-head"><span class="p-num">05</span><h2>DocChat</h2>
-      <span class="p-kind">Retrieval-augmented generation</span></div>
-    <p class="p-lede">Upload a PDF and ask questions. DocChat finds the passages most relevant to your
-      question and has <b>Claude answer only from them, with citations</b>. Every answer is grounded in
-      the document, not guessed.</p>
-    <dl class="spec">
-      <div><dt>Built for</dt><dd>A personal project to get hands-on with retrieval-augmented generation</dd></div>
-      <div><dt>How it's used</dt><dd>Upload a PDF, ask a question, and get an answer drawn only from the document with each source passage cited</dd></div>
-      <div><dt>What changed</dt><dd>Instead of trusting a model's memory, every answer is grounded in the file and traceable to a page</dd></div>
-    </dl>
-
-    <div class="chartcard">
-      <h3>The pipeline</h3>
-      <div class="csub">Retrieval runs locally and free; only the final answer calls the model.</div>
-      <div class="ragflow">
-        <span>PDF</span><i>→</i><span>chunk</span><i>→</i><span>embed</span><i>→</i><span>retrieve top-k</span><i>→</i><span>ground</span><i>→</i><span>cite</span>
+    <article class="card" data-project="docchat" hidden>
+      <h3>DocChat</h3>
+      <p class="tag">Upload a PDF, ask a question, and get an answer drawn only from that document, with sources cited.</p>
+      <dl class="meta"><div><dt>Built for</dt><dd>Myself, to learn how to build a tool that answers from a specific document</dd></div><div><dt>How it's used</dt><dd>Ask questions of any text PDF and check each claim against its source</dd></div></dl>
+      <div data-flow="docchat"></div>
+      <div class="qa">
+        <div class="label">Example on a sample member handbook</div>
+        <p class="q">What discount do working members get, and when are patronage dividends paid?</p>
+        <div>Working members who put in four volunteer hours a month earn an additional <b>5% discount</b> <span class="qcite">[3]</span>, on top of the standing <b>8%</b> member discount on bulk goods <span class="qcite">[1]</span>. Patronage dividends, which are 2% of annual purchases, are paid each <b>February</b> for the prior fiscal year <span class="qcite">[1]</span>.</div>
+        <div class="src"><span class="qcite">[1] page 2</span> Members receive a standing 8% discount on bulk goods and a 2% patronage dividend on annual purchases… Dividends are paid each February for the prior fiscal year.</div>
+        <div class="src"><span class="qcite">[3] page 5</span> Members working four volunteer hours per month earn an additional 5% working-member discount.</div>
       </div>
-    </div>
-
-    <div class="demo-frame" style="background:var(--inset);padding:16px 16px 7px">
-      <div class="qa-q">What discount do working members get, and when are patronage dividends paid?</div>
-      <div class="qa-a">Working members who put in four volunteer hours a month earn an additional
-        <b>5% discount</b> <span class="qcite">3</span>, on top of the standing <b>8%</b> member
-        discount on bulk goods <span class="qcite">1</span>. Patronage dividends, which are 2% of annual
-        purchases, are paid each <b>February</b> for the prior fiscal year <span class="qcite">1</span>.</div>
-      <div class="qa-src"><div class="sl"><b>[1]</b> · page 2 · 0.74 match</div>Members receive a standing 8% discount on bulk goods and a 2% patronage dividend on annual purchases… Dividends are paid each February for the prior fiscal year.</div>
-      <div class="qa-src"><div class="sl"><b>[3]</b> · page 5 · 0.71 match</div>Members working four volunteer hours per month earn an additional 5% working-member discount.</div>
-    </div>
-    <div class="demo-cap">Example on a sample member handbook. The answer cites the passages it drew from, and in the app each citation jumps to its source.</div>
-
-    <p class="how"><b>How:</b> the PDF is split into overlapping <b>chunks</b>, and each chunk is turned
-      into a numeric fingerprint (an <b>embedding</b>) by a small model that runs locally. The question
-      gets the same treatment, and the passages whose fingerprints are closest to it are ranked highest.
-      Only the top matches go to <b>Claude</b>, with instructions to answer from them and cite each claim.
-      Because the search step runs locally, the app works without an API key and shows you the passages
-      it found; adding a key turns on the written answers.</p>
-    <div class="p-links">
-      <a class="btn code" href="https://github.com/GrantVoytovich/docchat" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-        View code</a>
-      <span class="btn soon">Live demo · coming soon</span>
-    </div>
+      <a class="code" href="https://github.com/GrantVoytovich/docchat" target="_blank" rel="noopener">View code →</a>
+    </article>
   </section>
 
-  </div><!-- /tab-llm -->
-
-  <section class="roadmap">
-    <div class="eyebrow">What ties them together</div>
-    <h2>Same approach, three kinds of input</h2>
-    <p>Video, baseball stats, and documents are very different inputs, but each project follows the
-      same path: take something messy from the real world, build the pipeline that turns it into
-      something a person can act on, and ship it as a working app rather than a notebook.</p>
-  </section>
-  </div><!-- /tab-projects -->
-
-  <footer>
-    <span class="mono">Computer vision</span>: YOLOv8 + OpenCV, processed server-side. Demo clips are live tool output.
-    <span class="mono">Analytics</span>: Statcast expected stats via pybaseball, 2021 to 2026. Built by Grant Voytovich.
+  <footer id="contact">
+    <div class="kicker">Contact</div>
+    <h2>Get in Touch</h2>
+    <p>Outside of work, I love being active, reading, traveling, trying new foods, and hanging out with family and friends. Thanks for checking out my portfolio, and please feel free to reach out.</p>
+    <p style="font-family:var(--mono);font-size:.86rem"><a href="mailto:grantvoytovich@gmail.com">grantvoytovich@gmail.com</a> · <a href="https://www.linkedin.com/in/grant-voytovich/" target="_blank" rel="noopener">linkedin.com/in/grant-voytovich</a></p>
+    <div class="fine">Demo clips are real tool output. MLB data: Statcast expected stats via pybaseball, 2021 to 2026.</div>
   </footer>
-</div>
+</main>
 
 <script>
-/* ---------- CV charts (unchanged) ---------- */
 const HORSE=[0.243,0.254,0.262,0.27,0.272,0.272,0.265,0.257,0.245,0.233,0.221,0.21,0.208,0.21,0.216,0.223,0.241,0.262,0.296,0.335,0.381,0.432,0.485,0.542,0.582,0.615,0.638,0.658,0.664,0.666,0.649,0.626,0.593,0.548,0.495,0.435,0.381,0.33,0.293,0.266,0.25,0.24,0.245,0.258,0.277,0.3,0.327,0.355,0.359,0.369,0.405,0.451,0.507,0.573,0.649,0.734,0.833,0.945,1.07,1.207,1.343,1.468,1.543,1.597,1.638,1.658,1.654,1.626,1.574,1.496,1.392,1.262,1.143,1.012,0.888,0.769,0.663,0.575,0.504,0.447,0.402,0.368,0.347,0.339,0.344,0.361,0.391,0.422,0.438,0.437,0.423,0.403,0.385,0.369,0.357,0.348,0.343,0.341,0.343,0.349,0.357,0.377,0.407,0.445,0.481,0.52,0.556,0.59,0.621,0.648,0.673,0.695,0.714,0.729,0.739,0.744,0.747,0.746,0.743,0.737,0.728,0.717,0.7,0.678,0.649,0.615,0.576,0.53,0.479,0.422,0.364,0.31,0.261,0.218,0.18,0.149,0.123,0.103,0.089,0.08,0.078,0.081,0.088,0.094,0.097,0.097,0.097,0.099,0.103,0.108,0.114,0.122,0.131,0.141,0.153,0.169,0.188,0.208,0.233,0.255,0.276,0.294,0.312,0.328,0.342,0.358,0.369,0.371,0.367,0.36,0.337,0.312,0.283,0.257,0.235,0.217,0.204,0.193,0.185,0.183,0.182,0.183,0.192,0.204,0.217,0.226,0.231,0.23,0.228,0.222,0.221,0.22,0.222,0.225,0.224,0.222,0.229,0.24,0.253,0.267,0.276,0.285,0.285,0.282,0.278,0.274,0.281,0.293,0.29,0.282,0.27,0.26,0.252,0.244,0.241,0.242,0.244,0.246,0.24,0.232,0.223,0.215,0.203,0.192,0.193,0.203,0.202,0.198,0.18,0.165,0.158,0.154,0.169,0.189,0.216,0.241,0.271,0.299,0.322,0.343,0.359,0.364,0.358,0.347,0.325,0.301,0.277,0.254,0.212,0.159,0.119,0.085,0.071,0.067,0.071,0.075,0.082,0.095,0.112,0.13,0.152,0.177,0.203,0.228,0.25,0.269,0.285,0.302,0.319,0.327,0.332,0.331,0.324,0.319,0.314,0.308,0.301,0.294,0.287,0.279,0.271,0.262,0.253,0.25,0.252,0.25,0.248,0.248,0.254,0.248,0.231,0.225,0.233,0.26,0.294,0.338,0.384,0.429,0.472,0.516,0.559,0.602,0.642,0.658,0.646,0.607,0.566,0.525,0.485,0.447,0.408,0.371,0.328,0.296,0.275,0.266,0.27,0.282,0.287,0.281,0.268,0.253,0.238,0.218,0.197,0.183,0.174,0.164,0.153,0.141,0.128,0.131,0.144,0.153,0.163,0.162,0.158,0.154,0.151,0.153,0.158,0.159,0.159,0.156,0.152,0.141,0.127,0.13,0.143,0.141,0.144,0.151,0.159,0.178,0.206,0.213,0.212,0.231,0.257,0.301,0.346,0.371,0.378,0.382,0.385,0.386,0.384,0.4,0.422,0.431,0.436,0.395,0.347,0.328,0.319,0.315,0.314,0.313,0.312,0.295,0.271,0.245,0.215,0.223,0.24,0.271,0.307,0.333,0.355,0.38,0.408,0.439,0.471,0.511,0.554,0.569,0.568,0.544,0.511,0.484,0.459,0.418,0.371,0.323,0.277,0.238,0.204,0.193,0.189,0.189,0.19,0.19,0.191,0.205,0.227,0.25,0.274,0.29,0.305,0.312,0.315,0.344,0.38,0.417,0.45,0.482,0.511,0.543,0.581,0.633,0.695,0.768,0.846,0.907,0.962,0.997,1.018,1.029,1.031,1.03,1.013,0.976,0.917,0.838,0.754,0.673,0.597,0.555,0.531,0.535,0.554,0.577,0.604,0.628,0.652,0.684,0.716,0.745,0.765,0.759,0.742,0.683,0.627,0.584,0.555,0.538,0.534,0.543,0.565,0.6,0.649,0.71,0.78,0.859,0.921,0.971,1.006,1.036,1.055,1.054,1.033,0.992,0.934,0.859,0.763,0.675,0.602,0.546,0.506,0.483,0.477,0.487,0.515,0.56,0.622,0.702,0.798,0.902,0.999,1.076,1.14,1.194,1.236,1.261,1.266,1.268,1.265,1.267,1.266,1.222,1.151,1.067,0.971,0.868,0.778,0.703,0.642,0.595,0.56,0.538,0.528,0.531,0.546,0.575,0.616,0.657,0.684,0.706,0.724,0.723,0.702,0.655,0.594,0.547,0.502,0.459,0.421,0.398,0.381,0.368,0.358,0.353,0.351,0.356,0.369,0.386,0.41,0.424,0.427,0.433,0.437,0.434,0.425,0.416,0.408,0.397,0.381,0.359,0.33,0.313,0.301,0.293,0.287,0.283,0.285,0.287,0.295,0.314,0.34,0.377,0.418,0.464,0.511,0.548,0.581,0.628,0.676,0.72,0.753,0.778,0.802,0.821,0.847,0.865,0.89,0.921,0.955,1.035,1.131,1.214,1.295,1.366,1.422,1.479,1.524,1.56,1.57,1.559,1.537,1.389,1.236,1.102,0.976,0.851,0.732,0.621,0.519,0.425,0.346,0.28,0.221,0.228,0.22,0.204,0.186];
 const FORM=[140.8,141.1,140.9,140.1,137.7,135.5,133.5,131.3,129.5,127.8,126.1,124.7,123.3,122.1,120.9,119.7,117.1,114.5,112,109.4,107.8,105.9,104.1,102.5,100.8,99,97.5,95.9,94.8,94,93.1,91.7,89.5,87.1,84.7,82.8,81.8,81.6,81.1,80.9,80.5,78.8,76.7,74.9,73.3,72,71.1,69.8,68.2,66.8,65.7,64.2,63.3,62.9,62.7,62.8,62.7,62.1,61.4,60.9,60.6,60.5,60.5,60.5,60.2,59.8,59.6,59.2,59.2,59.2,59.1,58.9,58.7,58.5,58.4,58.5,58.6,58.6,58.8,58.7,58.7,58.5,58.1,57.8,57.4,57.1,56.8,56.5,56.4,55.8,55.4,54.9,54.5,54.5,55,56,56.9,57.7,58.1,58.2,58.2,58.1,58,57.9,58.1,58.3,58.8,59.2,59.2,59.7,60.5,61.5,63.1,65,66.4,69,71.5,74.6,77.9,81.2,85.1,88.7,93.1,95.6,97.5,99.3,100.3,102.4,104.3,106.6,109.7,113.1,116.6,120.3,123.5,126.3,129.3,132.7,136.1,139.3,142,143.8,145.4,146.8,148.4,150,151.4,152.6,153.7,155.1,156.7,158.1,159.8,161.2,162.8,164.5,166.1,167.5,169.1,170.5,171.8,173,173.6,174.2,174.5,174.9,175.4,175.7,175.9,176,176,176.1,176.1,176.3,176.2,176.2,176,175.9,175.4,174.5,173.7,172.9,172.4,172.4,172.8,172.6,172.4,172.1,171.2,141.1,126.3,96.4,66.5,66.7,51.6,51.9,52.5,52.9,53.4,53.8,54.1,54.5,55.2,55.9,56.6,57.2,57.6,58,58.3,58.7,59.1,59.8,60.5,62.1,63.6,65.2,66.7,67.5,68.2,68.8,69.6,70.5,71.6,72.9,74.2,75.5,76.8,78.1,79.4,80.7,81.6,82.6,84,85.7,88.1,90.2,92.1,94.4,96.2,97.8,99.5,100.1,100.8,101.7,102.3,103,103.5,103.2,102.8,101.9,101.5,102.7,104.3,106.7,109,110.7,112.4,114.1,115.7,117.4,119,120.7,122.4,124,125.5,126.8,128,129.2,130.3,131.5,132.6,133.5,134.1,134.3,134.2,134,133.8,133.6,133.3,133,132.8,132.5,132.2,132,131.7,131.5,131.2,130.9,130.7,130.4,130.1,129.9,129.6,129.3,129.1,128.8,128.6,128.3,128,127.8,127.5,127.2,127,126.7,126.5,126.2,125.9,125.7,125.6,125.5,124.8,123.6,121.7,119.3,117.2,115,112.9,110.8,108.6,106.5,103.4,99.7,94.9,89.2,85,81.9,80.4];
 
@@ -614,18 +312,18 @@ function drawChart(id, s, color, mode){
   const y=v=>padT+(H-padT-padB)*(1-(v-lo)/(hi-lo));
   let g="";
   ticks.forEach(val=>{ const yy=y(val);
-    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#e8e8e2" stroke-width="1"/>`;
-    g+=`<text x="${padL-6}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">${(mode==="deg"?val:val.toFixed(1))}${suffix}</text>`; });
+    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#22384a" stroke-width="1"/>`;
+    g+=`<text x="${padL-6}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">${(mode==="deg"?val:val.toFixed(1))}${suffix}</text>`; });
   let line=""; s.forEach((v,i)=>{ line+=(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
   const area=mode==="deg"?"":(line+`L ${x(n-1).toFixed(1)} ${y(0)} L ${x(0).toFixed(1)} ${y(0)} Z`);
   const grad=mode==="deg"?"":`<defs><linearGradient id="g_${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".24"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#g_${id})"/>`;
   const mark=`<circle cx="${x(markIdx).toFixed(1)}" cy="${y(s[markIdx]).toFixed(1)}" r="3.5" fill="${color}"/>`;
   svg.innerHTML=`${grad}${g}<path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>${mark}
-    <text x="${padL}" y="${H-6}" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">start</text>
-    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">end</text>`;
+    <text x="${padL}" y="${H-6}" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">start</text>
+    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">end</text>`;
 }
-drawChart("chartHorse", HORSE, "#0f766e", "bls");
-drawChart("chartForm", FORM, "#0f766e", "deg");
+drawChart("chartHorse", HORSE, "#4fd1b5", "bls");
+drawChart("chartForm", FORM, "#4fd1b5", "deg");
 
 const PITCH_SEQ={
   pelvis:[0.202,0.187,0.175,0.176,0.183,0.232,0.238,0.201,0.316,0.539,0.8,0.985,1,0.88,0.623,0.279,0.091,0.068,0.122,0.159,0.158,0.146,0.141,0.1,0.055,0.063,0.095,0.12,0.097,0.095,0.114,0.105,0.103,0.126,0.132,0.107,0.087,0.073,0.053,0.034,0.034],
@@ -636,13 +334,13 @@ const PITCH_SEQ={
 function drawSeq(id, c){
   const svg=document.getElementById(id); if(!svg) return;
   const vb=svg.viewBox.baseVal, W=vb.width, H=vb.height, padL=14,padR=10,padT=12,padB=22;
-  const curves=[["pelvis","#8e99a6"],["torso","#687585"],["arm","#0f766e"],["hands","#0f766e"]];
+  const curves=[["pelvis","#8fa3b5"],["torso","#5f7a94"],["arm","#4fd1b5"],["hands","#4fd1b5"]];
   const any=curves.find(([k])=>Array.isArray(c[k])&&c[k].length); if(!any) return;
   const n=c[any[0]].length;
   const x=i=>padL+(W-padL-padR)*(n<2?0:i/(n-1));
   const y=v=>padT+(H-padT-padB)*(1-v);
   let g=""; for(let t=0;t<=1.0001;t+=0.5){ const yy=y(t);
-    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#e8e8e2" stroke-width="1"/>`; }
+    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#22384a" stroke-width="1"/>`; }
   let paths="", marks=""; const peaks=c.peaks||{};
   curves.forEach(([k,col])=>{ const s=c[k]; if(!Array.isArray(s)||!s.length) return;
     let d=""; s.forEach((v,i)=>{ d+=(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
@@ -651,8 +349,8 @@ function drawSeq(id, c){
       marks+=`<line x1="${x(pi).toFixed(1)}" y1="${y(s[pi]).toFixed(1)}" x2="${x(pi).toFixed(1)}" y2="${H-padB}" stroke="${col}" stroke-width="1" stroke-dasharray="3 3" opacity=".55"/>`;
       marks+=`<circle cx="${x(pi).toFixed(1)}" cy="${y(s[pi]).toFixed(1)}" r="3.5" fill="${col}"/>`; } });
   svg.innerHTML=`${g}${marks}${paths}
-    <text x="${padL}" y="${H-6}" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">start</text>
-    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">release →</text>`;
+    <text x="${padL}" y="${H-6}" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">start</text>
+    <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">end</text>`;
 }
 drawSeq("chartPitch", PITCH_SEQ);
 const SWING_SEQ={
@@ -697,18 +395,18 @@ function drawBuckets(){
   const y=v=>mid-(v/max)*half;
   let s='';
   [-1,-0.5,0,0.5,1].forEach(v=>{ const yy=y(v);
-    s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="${v===0?'#9a9ea5':'#e8e8e2'}" stroke-width="${v===0?1.5:1}"/>`;
-    s+=`<text x="${padL-7}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#9a9ea5" font-family="IBM Plex Mono,monospace">${v>0?'+':''}${v.toFixed(1)}</text>`; });
+    s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="${v===0?'#7f93a6':'#22384a'}" stroke-width="${v===0?1.5:1}"/>`;
+    s+=`<text x="${padL-7}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#7f93a6" font-family="IBM Plex Mono,monospace">${v>0?'+':''}${v.toFixed(1)}</text>`; });
   b.forEach((d,i)=>{
-    const cx=padL+slot*i+slot/2, v=d.change_mean, col=v>0?'#b4532f':'#0f766e';
+    const cx=padL+slot*i+slot/2, v=d.change_mean, col=v>0?'#f0a35e':'#4fd1b5';
     const y0=y(0), yv=y(v);
     s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${Math.min(y0,yv).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.abs(yv-y0).toFixed(1)}" rx="2" fill="${col}"/>`;
     s+=`<text x="${cx.toFixed(1)}" y="${(v>0?yv-6:yv+14).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="${col}" font-family="IBM Plex Mono,monospace">${v>0?'+':''}${v.toFixed(2)}</text>`;
-    s+=`<text x="${cx.toFixed(1)}" y="${H-26}" text-anchor="middle" font-size="9.5" fill="#8a8f96" font-family="IBM Plex Mono,monospace">${d.gap_mean>0?'+':''}${d.gap_mean.toFixed(2)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${H-26}" text-anchor="middle" font-size="9.5" fill="#8fa3b5" font-family="IBM Plex Mono,monospace">${d.gap_mean>0?'+':''}${d.gap_mean.toFixed(2)}</text>`;
   });
-  s+=`<text x="${padL}" y="${H-9}" font-size="9.5" fill="#9a9ea5">← lucky (ERA under xERA)</text>`;
-  s+=`<text x="${W-padR}" y="${H-9}" text-anchor="end" font-size="9.5" fill="#9a9ea5">unlucky →</text>`;
-  s+=`<text x="${padL-7}" y="${top-6}" font-size="9" fill="#9a9ea5">ΔERA next yr</text>`;
+  s+=`<text x="${padL}" y="${H-9}" font-size="9.5" fill="#7f93a6">← lucky (ERA under xERA)</text>`;
+  s+=`<text x="${W-padR}" y="${H-9}" text-anchor="end" font-size="9.5" fill="#7f93a6">unlucky →</text>`;
+  s+=`<text x="${padL-7}" y="${top-6}" font-size="9" fill="#7f93a6">ΔERA next yr</text>`;
   svg.innerHTML=s;
 }
 let anDrawn=false;
@@ -733,21 +431,100 @@ function renderAnalytics(){
   drawBuckets();
 }
 
-/* ---------- tabs ---------- */
-function showTab(which){
-  if(which==='cv'||which==='analytics'||which==='llm') which='projects';
-  const map={about:['t-about','tab-about'],pro:['t-pro','tab-pro'],projects:['t-projects','tab-projects']};
-  if(!map[which]) which='about';
-  for(const key in map){ const on=key===which;
-    document.getElementById(map[key][1]).hidden=!on;
-    document.getElementById(map[key][0]).setAttribute('aria-selected',on); }
-  if(which==='projects' && !anDrawn){ renderAnalytics(); anDrawn=true; }
-  try{ history.replaceState(null,'','#'+which); }catch(e){}
-  window.scrollTo({top:0});
+
+
+const AGENTS=[
+ {title:"Legal Agreement Review Agent",tag:"Gives leadership one place to see the key terms of every partner contract.",user:"The executive team",result:"Leadership can find the answer quickly without having to read through the contract.",
+  curSum:"Before: every question about a contract meant someone opening a PDF and reading it.",
+  futSum:"After: AI reads each contract, and leadership looks up the answer in an app.",
+  cur:[
+   {t:"An exec asks a question",d:"For example, when does this agreement expire, or how much does this partner owe us?"},
+   {t:"Someone finds the contract",d:"They track down the right PDF for that partner."},
+   {t:"They read through it",d:"Dates, terms, and fees are buried in a long legal document."},
+   {t:"They send back the answer",d:"The next question starts the whole process over."}],
+  fut:[
+   {t:"Contracts go in",d:"Each partner's legal agreement is given to the agent as a PDF."},
+   {t:"AI reads the contract",ai:1,d:"It pulls out expiration dates, fees, and what each side agreed to do."},
+   {t:"Terms are organized",d:"Every contract's terms are saved in the same format, so they can be compared."},
+   {t:"Leadership looks it up",d:"An app on AWS gives executives a live view of every contract."}]},
+ {title:"Partner Status Newsletter",tag:"Sends each partner a status report every two weeks.",user:"Our fintech partners and the team that manages them",result:"Both sides can now see where things stand and what is owed without searching through email.",
+  curSum:"Before: status lived in email threads, so neither side could easily see where things stood.",
+  futSum:"After: AI writes each partner a status report every two weeks, automatically.",
+  cur:[
+   {t:"Updates scatter across email",d:"Status, open items, and requests sit in many separate threads."},
+   {t:"Someone searches the threads",d:"Finding where a project stands means digging through email history."},
+   {t:"They piece it together",d:"What's done and what's open is worked out by hand, partner by partner."},
+   {t:"Both sides stay unsure",d:"It's hard to see what is still owed, or by whom."}],
+  fut:[
+   {t:"Project data is collected",d:"Every two weeks, the agent pulls from several of our data sources."},
+   {t:"AI works out the status",ai:1,d:"For each partner, it determines where each initiative stands and what's open."},
+   {t:"AI writes the report",ai:1,d:"It covers progress, what we need from them, and what they need from us."},
+   {t:"Each partner gets it",d:"The update arrives on a schedule they can count on."}]},
+ {title:"Daily Action-Item Agent",tag:"Gives each teammate a personal to-do list every day.",user:"My team",result:"People no longer have to track their to-dos by hand, and fewer items get missed.",
+  curSum:"Before: everyone checked every tool and kept their own to-do list by hand.",
+  futSum:"After: AI checks every tool and sends each person a list of what's theirs.",
+  cur:[
+   {t:"Tasks land in three places",d:"Requests are buried in email, project management software, and team chat."},
+   {t:"Everyone checks every tool",d:"Each person reads through it all to find what's theirs."},
+   {t:"Everyone keeps their own list",d:"Each person tracks their to-dos by hand."},
+   {t:"Items get missed",d:"It's easy to fall behind, and items get lost between tools."}],
+  fut:[
+   {t:"AI reads each work tool",ai:1,d:"It goes through email, project management software, and team chat."},
+   {t:"AI spots the to-dos",ai:1,d:"It picks out messages and updates that need someone to act."},
+   {t:"AI assigns each one",ai:1,d:"It works out which person each action item belongs to."},
+   {t:"Everyone gets their list",d:"Each person receives one daily update with only their own items."}]}
+];
+const PIPES={
+ horse:[{t:"Video clip",d:"Any race or training clip. No special camera or setup."},{t:"Find the horse",ai:1,d:"YOLOv8 detects the horse in each frame, and ByteTrack keeps following the same horse."},{t:"Measure movement",ai:1,d:"Dividing distance moved by body length gives a speed that doesn't depend on how far away the camera is."},{t:"Gait and cadence",d:"The result is the horse's gait, its relative speed, and its stride rhythm."}],
+ form:[{t:"Squat video",d:"A clip of a set, recorded on a phone."},{t:"Place skeleton",ai:1,d:"YOLOv8-pose places 17 body keypoints in each frame."},{t:"Track knee angle",ai:1,d:"The hip, knee, and ankle positions give a knee angle, with thresholds that adapt to each person's range of motion."},{t:"Grade the set",d:"Reps, depth, tempo, and symmetry, with coaching cues."}],
+ pitch:[{t:"Delivery video",d:"A pitching delivery from a single camera."},{t:"Track the body",ai:1,d:"YOLOv8-pose tracks 17 keypoints and works out which arm is throwing."},{t:"Measure rotation",ai:1,d:"It measures wrist speed, the angle between the hips and shoulders, and when each body segment rotates fastest."},{t:"Mechanics readout",d:"Arm speed, separation, and whether the pelvis, torso, and arm fire in order. Rotation numbers are 2-D estimates."}],
+ swing:[{t:"Swing video",d:"A baseball or golf swing from a single camera."},{t:"Track the body",ai:1,d:"YOLOv8-pose tracks 17 keypoints, with the hands taken as the midpoint between the wrists."},{t:"Isolate downswing",ai:1,d:"It measures only from the top of the swing to impact, so follow-through rotation doesn't distort the sequence."},{t:"Swing readout",d:"Hand speed, separation, and sequence. Rotation numbers are 2-D estimates."}],
+ mlb:[{t:"Statcast data",d:"Public Baseball Savant data from 2021 to 2026, pulled with pybaseball."},{t:"Measure the gap",d:"Compare actual results (ERA, wOBA) to expected ones (xERA, xwOBA), which strip out much of the luck."},{t:"Test on history",d:"Check past seasons to see whether big gaps really did close the next year."},{t:"2027 watch list",d:"Apply a simple model fit on past seasons to rank 2026 players."}],
+ docchat:[{t:"PDF",d:"Upload any text-based PDF."},{t:"Chunk and embed",d:"The text is split into overlapping passages, and a small local model turns each into a numeric fingerprint."},{t:"Find matches",d:"Your question gets a fingerprint too, and the closest passages are retrieved. This step runs locally for free."},{t:"Cited answer",ai:1,d:"Claude answers from those passages only and cites each claim. Without an API key, the app still shows the passages."}]
+};
+function mountFlow(host,steps,cls,summary){
+  host.innerHTML=(summary?`<p class="summary ${cls}">${summary}</p>`:'')+`<ol class="flow ${cls}">`+steps.map((s,i)=>`<li style="--i:${i}"><div class="node ${s.ai?'ai':''}"><small>Step ${i+1}${s.ai?' · AI':''}</small><b>${s.t}</b><p>${s.d}</p></div></li>`).join('')+`</ol>`;
 }
-[['t-about','about'],['t-pro','pro'],['t-projects','projects']].forEach(
-  ([btn,key])=>document.getElementById(btn).addEventListener('click',()=>showTab(key)));
-showTab((location.hash||'').slice(1) || 'about');
+document.getElementById('agents').innerHTML=AGENTS.map((a,i)=>`<article class="card" data-agent="${i}">
+  <div class="card-head"><div><h3>${a.title}</h3><p class="tag" style="margin-bottom:0">${a.tag}</p></div>
+  <div class="switch" role="group" aria-label="Show process state"><button data-state="cur" aria-pressed="false">Before AI</button><button data-state="fut" aria-pressed="true">With AI</button></div></div>
+  <div class="host"></div>
+  <dl class="meta"><div><dt>Who uses it</dt><dd>${a.user}</dd></div><div><dt>What changed</dt><dd>${a.result}</dd></div></dl></article>`).join('');
+document.querySelectorAll('[data-agent]').forEach(card=>{
+  const a=AGENTS[+card.dataset.agent], host=card.querySelector('.host'), btns=card.querySelectorAll('.switch button');
+  mountFlow(host,a.fut,'fut',a.futSum);
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    btns.forEach(x=>x.setAttribute('aria-pressed',x===b));
+    mountFlow(host,a[b.dataset.state],b.dataset.state,a[b.dataset.state+'Sum']);
+  }));
+});
+document.querySelectorAll('[data-flow]').forEach(h=>mountFlow(h,PIPES[h.dataset.flow],'fut'));
+
+/* project picker */
+const cards=[...document.querySelectorAll('[data-project]')], picker=document.getElementById('picker');
+picker.innerHTML=cards.map((c,i)=>`<button data-p="${c.dataset.project}" aria-pressed="${i===0}">${c.querySelector('h3').textContent}</button>`).join('');
+picker.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  picker.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  cards.forEach(c=>{ const on=c.dataset.project===b.dataset.p; c.hidden=!on;
+    const v=c.querySelector('video'); if(v){ if(on){ v.play().catch(()=>{}); } else v.pause(); } });
+}));
+renderAnalytics();
+
+/* swimlane: click to jump, fill as you scroll */
+const items=[...document.querySelectorAll('#stages button')], targets=items.map(b=>document.getElementById(b.dataset.go));
+items.forEach((b,i)=>b.addEventListener('click',()=>targets[i].scrollIntoView()));
+const fill=document.getElementById('fill');
+function track(){
+  const y=scrollY+innerHeight*.4; let cur=0;
+  targets.forEach((t,i)=>{ if(t.offsetTop<=y) cur=i; });
+  if(scrollY+innerHeight>=document.documentElement.scrollHeight-4) cur=targets.length-1;
+  items.forEach((b,i)=>{ b.classList.toggle('done',i<=cur); b.classList.toggle('on',i===cur); });
+  const dot=items[cur].querySelector('i').getBoundingClientRect(), base=fill.parentElement.getBoundingClientRect();
+  fill.style.width=Math.max(0,dot.left-base.left-22)+'px';
+}
+addEventListener('scroll',track,{passive:true}); addEventListener('resize',track); track();
+const firstVideo=document.querySelector('[data-project="horse"] video');
+if(firstVideo) new IntersectionObserver((e,o)=>{ if(e[0].isIntersecting){ firstVideo.play().catch(()=>{}); o.disconnect(); } },{threshold:.3}).observe(firstVideo);
 </script>
 
 </body>
